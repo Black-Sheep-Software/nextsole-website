@@ -126,7 +126,7 @@ function Hero() {
                 Sign in →
               </Link>
             </div>
-            <p className="mt-4 text-sm text-neutral-500">Free for up to 8 pairs · No credit card needed</p>
+            <p className="mt-4 text-sm text-neutral-500">Free for up to 5 pairs · No credit card needed</p>
             <p className="mt-2 text-xs text-neutral-600">
               Nextsole is in active beta. We&apos;re building in the open and improving every week — your feedback shapes what comes next.
             </p>
@@ -232,7 +232,7 @@ function HowItWorks() {
 
 function PricingTable() {
   const rows = [
-    { feature: "Collection size", free: "Up to 8 pairs", pro: "Unlimited" },
+    { feature: "Collection size", free: "Up to 5 pairs", pro: "Unlimited" },
     { feature: "Sneaker catalogue search", free: true, pro: true },
     { feature: "Manual entry", free: true, pro: true },
     { feature: "Market price tracking", free: true, pro: true },
@@ -241,6 +241,8 @@ function PricingTable() {
     { feature: "CSV import & export", free: false, pro: true },
     { feature: "Complete shoe data", free: false, pro: true },
     { feature: "Gallery images", free: false, pro: true },
+    { feature: "Custom tags", free: false, pro: true },
+    { feature: "Wishlist + price alerts", free: false, pro: true },
     { feature: "Early access features", free: false, pro: true },
   ];
 
@@ -316,7 +318,7 @@ function FinalCTA() {
         <Link href={SIGNIN} className="mt-8 inline-block rounded-xl bg-lime-400 px-8 py-4 text-base font-bold text-black hover:bg-lime-300 transition shadow-lg shadow-lime-400/20">
           Start tracking for free →
         </Link>
-        <p className="mt-4 text-sm text-neutral-500">Free for up to 8 pairs · Upgrade anytime</p>
+        <p className="mt-4 text-sm text-neutral-500">Free for up to 5 pairs · Upgrade anytime</p>
       </div>
     </section>
   );
