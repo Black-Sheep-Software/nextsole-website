@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import WaitlistButton from "./WaitlistButton";
+import AppScreenshotCarousel from "./AppScreenshotCarousel";
 
 const APP = "https://app.nextsole.co.uk";
 const SIGNIN = `${APP}/login`;
@@ -52,24 +53,6 @@ function IconMinus() {
     <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
     </svg>
-  );
-}
-
-// ── App screenshot ─────────────────────────────────────────────────────────
-
-function AppScreenshot() {
-  return (
-    <div className="relative w-full max-w-lg mx-auto select-none">
-      <div className="absolute inset-0 rounded-3xl bg-lime-400/10 blur-3xl -z-10 scale-95" />
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-900/95 overflow-hidden shadow-2xl">
-        <div className="flex items-center gap-1.5 border-b border-neutral-800 px-4 py-3">
-          <div className="h-3 w-3 rounded-full bg-neutral-700" />
-          <div className="h-3 w-3 rounded-full bg-neutral-700" />
-          <div className="h-3 w-3 rounded-full bg-neutral-700" />
-        </div>
-        <Image src="/app-screenshot.png" alt="Nextsole app" width={960} height={640} className="w-full h-auto" />
-      </div>
-    </div>
   );
 }
 
@@ -133,7 +116,7 @@ function Hero() {
           </div>
 
           <div className="lg:pl-6">
-            <AppScreenshot />
+            <AppScreenshotCarousel />
           </div>
         </div>
       </div>
