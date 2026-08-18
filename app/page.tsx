@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import WaitlistButton from "./WaitlistButton";
 import AppScreenshotCarousel from "./AppScreenshotCarousel";
 
 const APP = "https://app.nextsole.co.uk";
 const SIGNIN = `${APP}/login`;
+const PRICING = `${APP}/pricing`;
 
 // ── Icons ──────────────────────────────────────────────────────────────────
 
@@ -92,7 +92,7 @@ function Hero() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-lime-500/30 bg-lime-400/10 px-3 py-1.5 text-xs font-semibold text-lime-400">
               <span className="h-1.5 w-1.5 rounded-full bg-lime-400 animate-pulse" />
-              Now in beta · Free to start
+              Free to start · Upgrade anytime
             </div>
             <h1 className="mt-6 text-5xl font-black leading-tight tracking-tight sm:text-6xl lg:text-7xl">
               Track every pair.<br />
@@ -110,9 +110,6 @@ function Hero() {
               </Link>
             </div>
             <p className="mt-4 text-sm text-neutral-500">Free for up to 5 pairs · No credit card needed</p>
-            <p className="mt-2 text-xs text-neutral-600">
-              Nextsole is in active beta. We&apos;re building in the open and improving every week — your feedback shapes what comes next.
-            </p>
           </div>
 
           <div className="lg:pl-6">
@@ -217,9 +214,9 @@ function PricingTable() {
   const rows = [
     { feature: "Collection size", free: "Up to 5 pairs", pro: "Unlimited" },
     { feature: "Sneaker catalogue search", free: true, pro: true },
-    { feature: "Manual entry", free: true, pro: true },
     { feature: "Market price tracking", free: true, pro: true },
-    { feature: "Daily rotation pick", free: "1 pick", pro: "Full rotation" },
+    { feature: "Rotation Engine", free: "1 daily pick", pro: "Full weighted rotation" },
+    { feature: "Weather-aware rotation", free: false, pro: true },
     { feature: "Price history charts", free: false, pro: true },
     { feature: "CSV import & export", free: false, pro: true },
     { feature: "Complete shoe data", free: false, pro: true },
@@ -250,12 +247,11 @@ function PricingTable() {
             </div>
             <div className="border-l border-neutral-800 bg-lime-400/5 p-5 text-center">
               <span className="inline-block rounded-full bg-lime-400 px-3 py-0.5 text-xs font-bold text-black whitespace-nowrap">Pro</span>
-              <p className="mt-2 text-xs uppercase tracking-widest text-lime-400 font-semibold">Plan</p>
-              <p className="mt-2 text-xl font-black leading-tight">Coming<br/>soon</p>
-              <p className="text-xs text-neutral-500">beta · early access</p>
-              <WaitlistButton className="mt-4 block w-full rounded-xl bg-lime-400 px-4 py-2.5 text-sm font-bold text-black hover:bg-lime-300 transition text-center cursor-pointer">
-                Join waitlist
-              </WaitlistButton>
+              <p className="mt-2 text-3xl font-black">£4.99</p>
+              <p className="text-xs text-neutral-500">per month · or £39.99/yr</p>
+              <Link href={PRICING} className="mt-4 block rounded-xl bg-lime-400 px-4 py-2.5 text-sm font-bold text-black hover:bg-lime-300 transition text-center">
+                Upgrade to Pro
+              </Link>
             </div>
           </div>
           {rows.map((row, i) => (
@@ -321,7 +317,7 @@ function Footer() {
             <Link href={`${APP}/feedback`} className="hover:text-neutral-300 transition">Feedback</Link>
             <Link href={SIGNIN} className="hover:text-neutral-300 transition">Sign in</Link>
           </div>
-          <p className="text-xs text-neutral-700">© {new Date().getFullYear()} Nextsole</p>
+          <p className="text-xs text-neutral-700">© {new Date().getFullYear()} Nextsole · A product of Black Sheep Software</p>
         </div>
       </div>
     </footer>
@@ -340,6 +336,7 @@ function JsonLd() {
         name: "Nextsole",
         url: "https://nextsole.co.uk",
         logo: "https://nextsole.co.uk/nextsole-logo.png",
+        brand: { "@type": "Brand", name: "Black Sheep Software" },
         sameAs: [],
       },
       {
@@ -361,12 +358,22 @@ function JsonLd() {
         operatingSystem: "Web",
         url: "https://app.nextsole.co.uk",
         description: "Track, value and manage your sneaker collection. Know what you own, what it's worth, and what to wear next.",
-        offers: {
-          "@type": "Offer",
-          price: "0",
-          priceCurrency: "GBP",
-          availability: "https://schema.org/InStock",
-        },
+        offers: [
+          {
+            "@type": "Offer",
+            name: "Free",
+            price: "0",
+            priceCurrency: "GBP",
+            availability: "https://schema.org/InStock",
+          },
+          {
+            "@type": "Offer",
+            name: "Pro",
+            price: "4.99",
+            priceCurrency: "GBP",
+            availability: "https://schema.org/InStock",
+          },
+        ],
         publisher: { "@id": "https://nextsole.co.uk/#org" },
       },
     ],
