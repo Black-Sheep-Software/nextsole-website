@@ -5,6 +5,7 @@ import AppScreenshotCarousel from "./AppScreenshotCarousel";
 const APP = "https://app.nextsole.co.uk";
 const SIGNIN = `${APP}/login`;
 const PRICING = `${APP}/pricing`;
+const LEADERBOARD = `${APP}/leaderboard`;
 
 // ── Icons ──────────────────────────────────────────────────────────────────
 
@@ -36,6 +37,14 @@ function IconAI() {
   return (
     <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
+    </svg>
+  );
+}
+
+function IconTrophy() {
+  return (
+    <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 0 3-3v-1.5a3 3 0 0 0-3-3h-9a3 3 0 0 0-3 3v1.5a3 3 0 0 0 3 3m9 0v2.25m-9-2.25v2.25M9 6.75V4.5a2.25 2.25 0 0 1 2.25-2.25h1.5A2.25 2.25 0 0 1 15 4.5v2.25m-9 0h12m-12 0a4.5 4.5 0 0 1-1.5 3.362M18 6.75a4.5 4.5 0 0 0 1.5 3.362" />
     </svg>
   );
 }
@@ -288,6 +297,46 @@ function PricingTable() {
   );
 }
 
+// ── Community ──────────────────────────────────────────────────────────────
+
+function Community() {
+  return (
+    <section className="py-24 sm:py-32 border-t border-neutral-800 bg-neutral-950">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+          <div>
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-lime-400/10 text-lime-400">
+              <IconTrophy />
+            </div>
+            <p className="mt-6 text-xs uppercase tracking-[0.3em] text-lime-400 font-semibold">Community</p>
+            <h2 className="mt-3 text-3xl font-black sm:text-5xl">Compete with collectors worldwide</h2>
+            <p className="mt-4 text-neutral-400 text-lg max-w-lg">
+              See who&apos;s got the deepest rotation, the most-loved pairs, and the most active shelf — all live, all public.
+            </p>
+            <a
+              href={LEADERBOARD}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 inline-block rounded-xl border border-neutral-600 px-6 py-3.5 text-sm font-semibold text-neutral-200 hover:border-lime-400/50 hover:text-lime-400 transition"
+            >
+              View the leaderboard →
+            </a>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-neutral-800 shadow-2xl">
+            <Image
+              src="/app-screenshot-leaderboard.png"
+              alt="Nextsole leaderboard — top collectors ranked by collection size"
+              width={1705}
+              height={580}
+              className="w-full h-auto"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ── Final CTA ──────────────────────────────────────────────────────────────
 
 function FinalCTA() {
@@ -429,6 +478,7 @@ export default function LandingPage() {
         <Features />
         <HowItWorks />
         <PricingTable />
+        <Community />
         <FinalCTA />
       </main>
       <Footer />
