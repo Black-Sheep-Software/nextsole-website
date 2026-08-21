@@ -315,6 +315,7 @@ function Footer() {
             <Link href={`${APP}/privacy`} className="hover:text-neutral-300 transition">Privacy Policy</Link>
             <Link href={`${APP}/terms`} className="hover:text-neutral-300 transition">Terms of Service</Link>
             <Link href={`${APP}/feedback`} className="hover:text-neutral-300 transition">Feedback</Link>
+            <a href="https://www.instagram.com/nextsoleuk" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-300 transition">Instagram</a>
             <Link href={SIGNIN} className="hover:text-neutral-300 transition">Sign in</Link>
           </div>
           <p className="text-xs text-neutral-700">© {new Date().getFullYear()} Nextsole · A product of Black Sheep Software</p>
@@ -337,7 +338,7 @@ function JsonLd() {
         url: "https://nextsole.co.uk",
         logo: "https://nextsole.co.uk/nextsole-logo.png",
         brand: { "@type": "Brand", name: "Black Sheep Software" },
-        sameAs: [],
+        sameAs: ["https://www.instagram.com/nextsoleuk"],
       },
       {
         "@type": "WebSite",
