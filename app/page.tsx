@@ -82,6 +82,12 @@ function Nav() {
     <header className="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-neutral-950/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         <Image src="/nextsole-logo.png" alt="Nextsole" width={120} height={34} className="h-7 w-auto" priority />
+        <nav className="hidden items-center gap-6 md:flex" aria-label="Page sections">
+          <a href="#features" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Features</a>
+          <a href="#how-it-works" className="text-sm font-semibold text-neutral-400 hover:text-white transition">How it works</a>
+          <a href="#pricing" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Pricing</a>
+          <a href="#community" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Community</a>
+        </nav>
         <div className="flex items-center gap-3">
           <Link href={SIGNIN} className="text-sm font-semibold text-neutral-400 hover:text-white transition">
             Sign in
@@ -202,7 +208,7 @@ function HowItWorks() {
   ];
 
   return (
-    <section className="py-24 sm:py-32 border-t border-neutral-800 bg-neutral-950">
+    <section id="how-it-works" className="py-24 sm:py-32 border-t border-neutral-800 bg-neutral-950">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="text-center">
           <p className="text-xs uppercase tracking-[0.3em] text-lime-400 font-semibold">How it works</p>
@@ -301,7 +307,7 @@ function PricingTable() {
 
 function Community() {
   return (
-    <section className="py-24 sm:py-32 border-t border-neutral-800 bg-neutral-950">
+    <section id="community" className="py-24 sm:py-32 border-t border-neutral-800 bg-neutral-950">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div>

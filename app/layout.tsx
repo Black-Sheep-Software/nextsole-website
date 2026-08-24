@@ -7,6 +7,7 @@ const SITE_URL = "https://nextsole.co.uk";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  alternates: { canonical: "/" },
   verification: { google: "_eyvvFzi2kVIZqI-4dLmeRKrX007WXPUF-MtcmMmoq0" },
   title: "Nextsole — Sneaker Collection Tracker",
   description: "Track, value and manage your sneaker collection. Know what you own, what it's worth, and what to wear next.",
