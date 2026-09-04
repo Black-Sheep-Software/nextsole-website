@@ -6,6 +6,7 @@ const APP = "https://app.nextsole.co.uk";
 const SIGNIN = `${APP}/login`;
 const PRICING = `${APP}/pricing`;
 const LEADERBOARD = `${APP}/leaderboard`;
+const PLAY_STORE = "https://play.google.com/store/apps/details?id=com.blacksheepsoftware.nextsole";
 
 // ── Icons ──────────────────────────────────────────────────────────────────
 
@@ -135,6 +136,20 @@ function Hero() {
               </Link>
             </div>
             <p className="mt-4 text-sm text-neutral-500">Free for up to 5 pairs · No credit card needed</p>
+
+            <a
+              href={PLAY_STORE}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 inline-block"
+              aria-label="Get Nextsole on Google Play"
+            >
+              <img
+                src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+                alt="Get it on Google Play"
+                className="h-14 w-auto"
+              />
+            </a>
           </div>
 
           <div className="lg:pl-6">
@@ -384,6 +399,13 @@ function Footer() {
               className="flex h-8 w-8 items-center justify-center rounded-full border border-neutral-800 text-neutral-400 transition hover:border-lime-400/50 hover:text-lime-400"
             >
               <IconInstagram />
+            </a>
+            <a href={PLAY_STORE} target="_blank" rel="noopener noreferrer" aria-label="Get Nextsole on Google Play">
+              <img
+                src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+                alt="Get it on Google Play"
+                className="h-8 w-auto opacity-60 transition hover:opacity-100"
+              />
             </a>
           </div>
           <div className="flex flex-wrap justify-center gap-6 text-sm text-neutral-500">
