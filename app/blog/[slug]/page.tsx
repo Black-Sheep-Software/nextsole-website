@@ -8,8 +8,6 @@ import BlogBlockRenderer from "@/components/BlogBlockRenderer";
 import { getBlogPost } from "@/lib/blogApi";
 import { CATEGORY_LABEL } from "@/lib/blogTypes";
 
-export const revalidate = 300;
-
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

@@ -16,8 +16,8 @@ export async function POST(request: Request) {
 
   const { slug } = await request.json().catch(() => ({}));
 
-  revalidatePath("/blog");
-  if (typeof slug === "string" && slug) revalidatePath(`/blog/${slug}`);
+  revalidatePath("/blog", "page");
+  if (typeof slug === "string" && slug) revalidatePath(`/blog/${slug}`, "page");
 
   return NextResponse.json({ revalidated: true, slug: slug ?? null });
 }

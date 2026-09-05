@@ -6,8 +6,6 @@ import SiteFooter from "@/components/SiteFooter";
 import { listBlogPosts } from "@/lib/blogApi";
 import { CATEGORY_LABEL } from "@/lib/blogTypes";
 
-export const revalidate = 300;
-
 export const metadata: Metadata = {
   title: "Blog — Nextsole",
   description: "Sneaker care guides, product updates, and stories from behind Nextsole.",
