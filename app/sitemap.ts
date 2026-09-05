@@ -1,8 +1,11 @@
 import { MetadataRoute } from "next";
+import { listBlogPosts } from "@/lib/blogApi";
 
 const SITE_URL = "https://nextsole.co.uk";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const posts = await listBlogPosts();
+
   return [
     {
       url: SITE_URL,
@@ -10,5 +13,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 1,
     },
+    {
+      url: `${SITE_URL}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...posts.map((post) => ({
+      url: `${SITE_URL}/blog/${post.slug}`,
+      lastModified: new Date(post.published_at),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
   ];
 }

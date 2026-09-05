@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import AppScreenshotCarousel from "./AppScreenshotCarousel";
+import SiteFooter from "@/components/SiteFooter";
 
 const APP = "https://app.nextsole.co.uk";
 const SIGNIN = `${APP}/login`;
@@ -46,16 +47,6 @@ function IconTrophy() {
   return (
     <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 0 3-3v-1.5a3 3 0 0 0-3-3h-9a3 3 0 0 0-3 3v1.5a3 3 0 0 0 3 3m9 0v2.25m-9-2.25v2.25M9 6.75V4.5a2.25 2.25 0 0 1 2.25-2.25h1.5A2.25 2.25 0 0 1 15 4.5v2.25m-9 0h12m-12 0a4.5 4.5 0 0 1-1.5 3.362M18 6.75a4.5 4.5 0 0 0 1.5 3.362" />
-    </svg>
-  );
-}
-
-function IconInstagram() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="3" y="3" width="18" height="18" rx="5" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="12" cy="12" r="4" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="17.25" cy="6.75" r="0.75" fill="currentColor" stroke="none" />
     </svg>
   );
 }
@@ -382,45 +373,6 @@ function FinalCTA() {
   );
 }
 
-// ── Footer ─────────────────────────────────────────────────────────────────
-
-function Footer() {
-  return (
-    <footer className="border-t border-neutral-800 py-10">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-          <div className="flex items-center gap-4">
-            <Image src="/nextsole-logo.png" alt="Nextsole" width={100} height={28} className="h-6 w-auto opacity-60" />
-            <a
-              href="https://www.instagram.com/nextsoleuk"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Nextsole on Instagram"
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-neutral-800 text-neutral-400 transition hover:border-lime-400/50 hover:text-lime-400"
-            >
-              <IconInstagram />
-            </a>
-            <a href={PLAY_STORE} target="_blank" rel="noopener noreferrer" aria-label="Get Nextsole on Google Play">
-              <img
-                src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-                alt="Get it on Google Play"
-                className="h-8 w-auto opacity-60 transition hover:opacity-100"
-              />
-            </a>
-          </div>
-          <div className="flex flex-wrap justify-center gap-6 text-sm text-neutral-500">
-            <Link href={`${APP}/privacy`} className="hover:text-neutral-300 transition">Privacy Policy</Link>
-            <Link href={`${APP}/terms`} className="hover:text-neutral-300 transition">Terms of Service</Link>
-            <Link href={`${APP}/feedback`} className="hover:text-neutral-300 transition">Feedback</Link>
-            <Link href={SIGNIN} className="hover:text-neutral-300 transition">Sign in</Link>
-          </div>
-          <p className="text-xs text-neutral-700">© {new Date().getFullYear()} Nextsole · A product of Black Sheep Software</p>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 // ── Structured data ────────────────────────────────────────────────────────
 
 function JsonLd() {
@@ -509,7 +461,7 @@ export default function LandingPage() {
         <Community />
         <FinalCTA />
       </main>
-      <Footer />
+      <SiteFooter />
     </>
   );
 }
