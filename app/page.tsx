@@ -79,6 +79,7 @@ function Nav() {
           <a href="#how-it-works" className="text-sm font-semibold text-neutral-400 hover:text-white transition">How it works</a>
           <a href="#pricing" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Pricing</a>
           <a href="#community" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Community</a>
+          <Link href="/faq" className="text-sm font-semibold text-neutral-400 hover:text-white transition">FAQ</Link>
         </nav>
         <div className="flex items-center gap-3">
           <Link href={SIGNIN} className="text-sm font-semibold text-neutral-400 hover:text-white transition">

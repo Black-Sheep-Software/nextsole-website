@@ -46,6 +46,7 @@ export default function SiteFooter() {
           </div>
           <div className="flex flex-wrap justify-center gap-6 text-sm text-neutral-500">
             <Link href="/blog" className="hover:text-neutral-300 transition">Blog</Link>
+            <Link href="/faq" className="hover:text-neutral-300 transition">FAQ</Link>
             <Link href={`${APP}/privacy`} className="hover:text-neutral-300 transition">Privacy Policy</Link>
             <Link href={`${APP}/terms`} className="hover:text-neutral-300 transition">Terms of Service</Link>
             <Link href={`${APP}/feedback`} className="hover:text-neutral-300 transition">Feedback</Link>
