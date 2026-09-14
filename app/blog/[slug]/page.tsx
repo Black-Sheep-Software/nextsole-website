@@ -42,6 +42,14 @@ export default async function BlogPostPage({ params }: Props) {
   const post = await getBlogPost(slug);
   if (!post) notFound();
 
+  // The page shell above already renders its own eyebrow (category), title,
+  // and cover image. Post blocks always start with the same trio (the
+  // email-block template's standard shape), so drop those to avoid showing
+  // the heading/image twice.
+  const bodyBlocks = post.blocks.filter(
+    (b) => b.type !== "eyebrow" && b.type !== "heading" && !(b.type === "image" && b.url === post.cover_image_url)
+  );
+
   const url = `https://nextsole.co.uk/blog/${post.slug}`;
   const jsonLd = {
     "@context": "https://schema.org",
@@ -80,7 +88,7 @@ export default async function BlogPostPage({ params }: Props) {
         )}
 
         <article className="mt-8">
-          <BlogBlockRenderer blocks={post.blocks} />
+          <BlogBlockRenderer blocks={bodyBlocks} />
         </article>
       </main>
       <SiteFooter />
