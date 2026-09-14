@@ -72,7 +72,7 @@ export default async function BlogPostPage({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <SiteNav />
-      <main className="mx-auto min-h-screen max-w-2xl px-4 pb-24 pt-32 sm:px-6">
+      <main className="mx-auto min-h-screen max-w-3xl px-4 pb-24 pt-32 sm:px-6">
         <Link href="/blog" className="text-sm font-semibold text-neutral-500 hover:text-lime-400">← Blog</Link>
 
         <p className="mt-6 text-xs font-semibold uppercase tracking-[0.3em] text-lime-400">{CATEGORY_LABEL[post.category]}</p>
@@ -83,11 +83,14 @@ export default async function BlogPostPage({ params }: Props) {
 
         {post.cover_image_url && (
           <div className="relative mt-8 aspect-video w-full overflow-hidden rounded-2xl">
-            <Image src={post.cover_image_url} alt={post.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 672px" priority />
+            <Image src={post.cover_image_url} alt={post.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 768px" priority />
           </div>
         )}
 
-        <article className="mt-8">
+        {/* Body text stays at a narrower reading width than the wider
+            header/hero image above, so long paragraphs don't stretch past a
+            comfortable line length on large screens. */}
+        <article className="mx-auto mt-8 max-w-2xl">
           <BlogBlockRenderer blocks={bodyBlocks} />
         </article>
       </main>
