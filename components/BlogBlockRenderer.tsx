@@ -1,6 +1,27 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import type { BlogBlock } from "@/lib/blogTypes";
+
+// Mirrors the main app's lib/emailBlocks.ts applyInlineFormatting() — same
+// minimal **bold**/*italic* markdown the admin editor's text field supports,
+// re-implemented as React nodes instead of an HTML string since this is a
+// JSX renderer, not an email's dangerouslySetInnerHTML target.
+function renderInlineFormatting(text: string): ReactNode[] {
+  const nodes: ReactNode[] = [];
+  const pattern = /\*\*(.+?)\*\*|\*(.+?)\*/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+  while ((match = pattern.exec(text))) {
+    if (match.index > lastIndex) nodes.push(text.slice(lastIndex, match.index));
+    if (match[1] !== undefined) nodes.push(<strong key={key++}>{match[1]}</strong>);
+    else nodes.push(<em key={key++}>{match[2]}</em>);
+    lastIndex = pattern.lastIndex;
+  }
+  if (lastIndex < text.length) nodes.push(text.slice(lastIndex));
+  return nodes;
+}
 
 // Maps the shared block schema to this site's own design system, rather
 // than reusing the main app's email-oriented HTML renderer (inline styles
@@ -19,7 +40,9 @@ function renderBlock(block: BlogBlock) {
       ) : null;
     case "text":
       return block.text ? (
-        <p className={`mt-4 whitespace-pre-line text-base leading-relaxed text-neutral-300 ${align}`}>{block.text}</p>
+        <p className={`mt-4 whitespace-pre-line text-base leading-relaxed text-neutral-300 ${align}`}>
+          {renderInlineFormatting(block.text)}
+        </p>
       ) : null;
     case "image":
       return block.url ? (
