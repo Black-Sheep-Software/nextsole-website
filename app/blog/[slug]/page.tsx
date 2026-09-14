@@ -42,8 +42,27 @@ export default async function BlogPostPage({ params }: Props) {
   const post = await getBlogPost(slug);
   if (!post) notFound();
 
+  const url = `https://nextsole.co.uk/blog/${post.slug}`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt || undefined,
+    image: post.cover_image_url || undefined,
+    datePublished: post.published_at,
+    dateModified: post.published_at,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    author: { "@type": "Organization", name: "Nextsole", url: "https://nextsole.co.uk" },
+    publisher: {
+      "@type": "Organization",
+      name: "Nextsole",
+      logo: { "@type": "ImageObject", url: "https://nextsole.co.uk/icon-192.png" },
+    },
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <SiteNav />
       <main className="mx-auto min-h-screen max-w-2xl px-4 pb-24 pt-32 sm:px-6">
         <Link href="/blog" className="text-sm font-semibold text-neutral-500 hover:text-lime-400">← Blog</Link>
