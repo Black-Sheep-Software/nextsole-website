@@ -25,7 +25,7 @@ export default async function BlogIndexPage() {
   return (
     <>
       <SiteNav />
-      <main className="mx-auto min-h-screen max-w-4xl px-4 pb-24 pt-32 sm:px-6">
+      <main className="mx-auto min-h-screen max-w-6xl px-4 pb-24 pt-32 sm:px-6">
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-lime-400">Blog</p>
         <h1 className="mt-3 text-4xl font-black sm:text-5xl">From Nextsole</h1>
         <p className="mt-4 max-w-lg text-neutral-400">
@@ -35,7 +35,7 @@ export default async function BlogIndexPage() {
         {posts.length === 0 ? (
           <p className="mt-16 text-neutral-500">Nothing published yet — check back soon.</p>
         ) : (
-          <div className="mt-12 grid gap-8 sm:grid-cols-2">
+          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {posts.map((post) => (
               <Link key={post.slug} href={`/blog/${post.slug}`} className="group block">
                 <div className="relative aspect-video overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900">
@@ -45,7 +45,7 @@ export default async function BlogIndexPage() {
                       alt={post.title}
                       fill
                       className="object-cover transition group-hover:scale-105"
-                      sizes="(max-width: 640px) 100vw, 50vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   )}
                 </div>
