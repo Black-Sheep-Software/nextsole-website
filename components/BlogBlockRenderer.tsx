@@ -45,10 +45,17 @@ function renderBlock(block: BlogBlock) {
         </p>
       ) : null;
     case "image":
+      // Deliberately a plain <img>, not next/image: these come from the
+      // admin's block editor with no stored width/height, and the previous
+      // fill+aspect-video+object-cover combo force-cropped every image into
+      // a 16:9 box regardless of what shape it actually was.
       return block.url ? (
-        <div className="relative mt-6 aspect-video w-full overflow-hidden rounded-2xl">
-          <Image src={block.url} alt={block.alt || ""} fill className="object-cover" sizes="(max-width: 768px) 100vw, 768px" />
-        </div>
+        <img
+          src={block.url}
+          alt={block.alt || ""}
+          className="mt-6 w-full rounded-2xl"
+          loading="lazy"
+        />
       ) : null;
     case "button":
       return block.text && block.url ? (
