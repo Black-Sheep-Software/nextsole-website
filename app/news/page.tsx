@@ -79,29 +79,28 @@ function NewsHero({ item }: { item: NewsItem }) {
   );
 }
 
-// Everything after the lead runs as a full-width list — thumbnail, headline,
-// meta — separated by hairlines, echoing how sneaker-news sites actually lay
-// out a feed below the fold, instead of a uniform grid of equal-size cards.
-function NewsRow({ item }: { item: NewsItem }) {
+// Everything after the lead runs as a real card grid — big image on top,
+// bold headline below, small-caps byline — the magazine-grid pattern real
+// sneaker/fashion news sites use (Highsnobiety, Hypebeast), rather than a
+// thin list of 64px thumbnails that reads as an afterthought next to the
+// hero above it.
+function NewsCard({ item }: { item: NewsItem }) {
   return (
-    <Link
-      href={item.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group flex items-center gap-4 border-b border-neutral-800 py-4 first:pt-0 last:border-b-0"
-    >
-      <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-neutral-800 sm:h-20 sm:w-20">
+    <Link href={item.link} target="_blank" rel="noopener noreferrer" className="group block">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-neutral-900">
         {item.image ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={item.image} alt="" className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
+          <img src={item.image} alt="" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
         ) : (
-          <span className="text-2xl">👟</span>
+          <div className="flex h-full w-full items-center justify-center text-4xl">👟</div>
         )}
       </div>
-      <div className="min-w-0 flex-1">
-        <p className="line-clamp-2 font-semibold leading-snug text-white transition group-hover:text-lime-400">{item.title}</p>
-        <p className="mt-1 text-xs text-neutral-500">{item.source} · {timeAgo(item.pubDate)}</p>
-      </div>
+      <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-lime-400">
+        {item.source} · {timeAgo(item.pubDate)}
+      </p>
+      <p className="mt-1.5 line-clamp-2 text-lg font-bold leading-snug text-white transition group-hover:text-lime-400">
+        {item.title}
+      </p>
     </Link>
   );
 }
@@ -140,8 +139,8 @@ export default async function NewsPage() {
   return (
     <>
       <SiteNav />
-      <main className="min-h-screen bg-neutral-950 px-6 pb-24 pt-32 text-white sm:px-8">
-        <div className="mx-auto max-w-5xl">
+      <main className="min-h-screen bg-neutral-950 px-6 pb-24 pt-32 text-white sm:px-8 xl:px-12">
+        <div className="mx-auto max-w-[1500px]">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-lime-400">News</p>
           <h1 className="mt-4 text-5xl font-black leading-tight tracking-tight sm:text-6xl">What&rsquo;s dropping</h1>
           <p className="mt-4 max-w-xl text-neutral-400">The latest sneaker news, what&rsquo;s coming next, and the full release history behind it.</p>
@@ -153,9 +152,9 @@ export default async function NewsPage() {
               <div className="mt-6">
                 <NewsHero item={news[0]} />
                 {news.length > 1 && (
-                  <div className="mt-2">
+                  <div className="mt-8 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {news.slice(1).map((item) => (
-                      <NewsRow key={item.link} item={item} />
+                      <NewsCard key={item.link} item={item} />
                     ))}
                   </div>
                 )}
@@ -202,7 +201,7 @@ export default async function NewsPage() {
               Browse a brand&rsquo;s full release history, from the earliest colourway to the newest drop.
             </p>
 
-            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {readyWithImages.map((b) => (
                 <BrandCardTile key={b.brand} brand={b} />
               ))}
