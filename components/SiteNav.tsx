@@ -15,7 +15,7 @@ export default function SiteNav() {
         </Link>
         <nav className="hidden items-center gap-6 md:flex" aria-label="Page sections">
           <Link href="/sneakers" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Sneakers</Link>
-          <Link href="/releases" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Releases</Link>
+          <Link href="/news" className="text-sm font-semibold text-neutral-400 hover:text-white transition">News</Link>
           <Link href="/blog" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Blog</Link>
           <Link href="/#pricing" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Pricing</Link>
           <Link href="/faq" className="text-sm font-semibold text-neutral-400 hover:text-white transition">FAQ</Link>
