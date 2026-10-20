@@ -106,22 +106,34 @@ function NewsCard({ item }: { item: NewsItem }) {
 }
 
 function BrandCardTile({ brand }: { brand: BrandCard }) {
+  // Same image-top/text-below pattern as NewsCard, for one consistent card
+  // language across the page — the previous version faded the sample image
+  // to 25% opacity as a background watermark, which read as blurry/washed
+  // out rather than as a real product photo, and gave no indication of
+  // what clicking the tile actually does.
   return (
     <Link
       href={`/news/${encodeURIComponent(brand.brand)}`}
-      className="group relative flex h-40 flex-col justify-end overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900 p-4 transition hover:border-lime-500/40"
+      className="group block overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 transition hover:border-lime-500/40"
     >
-      {brand.sampleImage && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={brand.sampleImage}
-          alt=""
-          className="absolute inset-0 h-full w-full object-contain p-6 opacity-25 transition duration-300 group-hover:scale-110 group-hover:opacity-40"
-        />
-      )}
-      <div className="relative">
+      <div className="relative aspect-[4/3] bg-white">
+        {brand.sampleImage ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={brand.sampleImage}
+            alt=""
+            className="h-full w-full object-contain p-6 transition duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-4xl">👟</div>
+        )}
+      </div>
+      <div className="p-4">
         <p className="text-lg font-black text-white">{brand.brand}</p>
-        <p className="text-xs text-neutral-400">{brand.datedRows} dated releases</p>
+        <p className="mt-1 text-sm text-neutral-400">{brand.datedRows} releases, oldest to newest</p>
+        <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-lime-400 transition group-hover:text-lime-300">
+          Browse the timeline →
+        </p>
       </div>
     </Link>
   );
