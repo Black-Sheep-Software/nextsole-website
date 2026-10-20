@@ -5,6 +5,10 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import { listUpcomingReleases } from "@/lib/catalogueApi";
 
+// See app/sneakers/page.tsx — this revalidate window is the one cache
+// actually in effect (lib/catalogueApi.ts fetches with no-store on purpose).
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "Release Calendar — Nextsole",
   description: "Upcoming sneaker release dates.",

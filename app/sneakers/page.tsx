@@ -5,6 +5,13 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import { listCatalogue } from "@/lib/catalogueApi";
 
+// lib/catalogueApi.ts fetches with cache: "no-store" deliberately (see its
+// own comment — stacking that with page-level ISR caused a real dual-cache
+// bug on the blog). This revalidate is the one cache that's actually in
+// effect; catalogue data changes slowly (nightly AI enrichment, weekly
+// Kicks backfill at most), so an hour is plenty fresh.
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "Sneaker Database — Nextsole",
   description: "Browse release dates, retail prices and details for thousands of sneakers.",

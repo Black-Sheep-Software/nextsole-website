@@ -6,6 +6,10 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import { getCatalogueItem } from "@/lib/catalogueApi";
 
+// See app/sneakers/page.tsx — this revalidate window is the one cache
+// actually in effect (lib/catalogueApi.ts fetches with no-store on purpose).
+export const revalidate = 3600;
+
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
