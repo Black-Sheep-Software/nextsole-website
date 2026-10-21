@@ -1,11 +1,30 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import { getNewsStory } from "@/lib/newsFeed";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ src?: string }>;
+};
+
+// src is a user-controlled query param — only ever redirect to one of our
+// actual news sources, never an arbitrary URL (this page would otherwise
+// be an open redirect off our own domain).
+const ALLOWED_SRC_HOSTS = ["hypebeast.com", "www.nicekicks.com", "sneakernews.com"];
+
+function safeSrc(src: string | undefined): string | null {
+  if (!src) return null;
+  try {
+    const url = new URL(src);
+    if (url.protocol !== "https:") return null;
+    return ALLOWED_SRC_HOSTS.includes(url.hostname) ? src : null;
+  } catch {
+    return null;
+  }
+}
 
 function timeAgo(pubDate: string | null): string {
   if (!pubDate) return "";
@@ -45,10 +64,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function NewsStoryPage({ params }: Props) {
+export default async function NewsStoryPage({ params, searchParams }: Props) {
   const { slug } = await params;
+  const { src } = await searchParams;
   const item = await getNewsStory(slug);
-  if (!item) notFound();
+  if (!item) {
+    // The server-side lookup is a fresh, independent feed fetch — it can
+    // fail for a source whose egress is currently blocked even though the
+    // item was right there in the list a moment ago. Fall back to the
+    // card's own external link rather than a dead 404 page.
+    const fallback = safeSrc(src);
+    if (fallback) redirect(fallback);
+    notFound();
+  }
 
   return (
     <>

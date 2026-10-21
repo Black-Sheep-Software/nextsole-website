@@ -54,10 +54,19 @@ function timeAgo(pubDate: string | null): string {
 // Lead story: headline overlaid directly on the image behind a gradient
 // scrim (Highsnobiety's pattern) rather than a card with text underneath —
 // reads as an editorial front page, not a blog grid.
+// `src` carries the item's real external link as a fallback — the story
+// page does its own server-side lookup by slug (a fresh, independent feed
+// fetch), which can fail for a source Vercel's egress can't currently
+// reach even though the item is right here in hand. Rather than 404 in
+// that case, the story page redirects straight to this param instead.
+function storyHref(item: NewsItem): string {
+  return `/news/story/${item.slug}?src=${encodeURIComponent(item.link)}`;
+}
+
 function NewsHero({ item }: { item: NewsItem }) {
   return (
     <Link
-      href={`/news/story/${item.slug}`}
+      href={storyHref(item)}
       className="group relative block aspect-[16/9] w-full overflow-hidden rounded-2xl bg-neutral-900 sm:aspect-[21/9]"
     >
       {item.image ? (
@@ -84,7 +93,7 @@ function NewsHero({ item }: { item: NewsItem }) {
 // hero above it.
 function NewsCard({ item }: { item: NewsItem }) {
   return (
-    <Link href={`/news/story/${item.slug}`} className="group block">
+    <Link href={storyHref(item)} className="group block">
       <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-neutral-900">
         {item.image ? (
           // eslint-disable-next-line @next/next/no-img-element
