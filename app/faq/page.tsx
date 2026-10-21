@@ -119,16 +119,20 @@ export default function FaqPage() {
   return (
     <>
       <SiteNav />
-      <main className="mx-auto min-h-screen max-w-2xl px-4 pb-24 pt-32 sm:px-6">
+      {/* Wider frame + a 2-column grid at larger sizes — these are
+          independent Q&As, not sequential prose, so splitting across
+          columns on a big screen is a real use of the space rather than
+          a readability tradeoff (unlike the blog's actual paragraph text). */}
+      <main className="mx-auto min-h-screen max-w-4xl px-4 pb-24 pt-32 sm:px-6">
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-lime-400">FAQ</p>
         <h1 className="mt-3 text-4xl font-black sm:text-5xl">Frequently asked questions</h1>
         <p className="mt-4 max-w-lg text-neutral-400">
           Everything you need to know before you start tracking your collection.
         </p>
 
-        <div className="mt-12 space-y-3">
+        <div className="mt-12 grid gap-3 sm:grid-cols-2">
           {FAQS.map(({ q, a }) => (
-            <details key={q} className="group rounded-xl border border-neutral-800 bg-neutral-900 px-5 py-4 open:pb-5">
+            <details key={q} className="group h-fit rounded-xl border border-neutral-800 bg-neutral-900 px-5 py-4 open:pb-5">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold">
                 {q}
                 <span className="shrink-0 text-neutral-500 transition group-open:rotate-45">+</span>

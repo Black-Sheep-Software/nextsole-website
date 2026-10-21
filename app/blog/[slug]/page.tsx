@@ -64,22 +64,28 @@ export default async function BlogPostPage({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <SiteNav />
-      <main className="mx-auto min-h-screen max-w-2xl px-4 pb-24 pt-32 sm:px-6">
+      {/* Page frame is wide (hero image, header) so it doesn't look stranded
+          on a big screen — but the actual paragraph text stays at a
+          readable measure (max-w-2xl, ~70-80 characters/line) inside that
+          frame. Widening the whole article to 1500px would make body
+          text harder to read, not better; the fix for "doesn't use the
+          screen" is the frame, not the prose column itself. */}
+      <main className="mx-auto min-h-screen max-w-4xl px-4 pb-24 pt-32 sm:px-6">
         <Link href="/blog" className="text-sm font-semibold text-neutral-500 hover:text-lime-400">← Blog</Link>
 
         <p className="mt-6 text-xs font-semibold uppercase tracking-[0.3em] text-lime-400">{CATEGORY_LABEL[post.category]}</p>
-        <h1 className="mt-3 text-3xl font-black sm:text-4xl">{post.title}</h1>
+        <h1 className="mt-3 max-w-2xl text-3xl font-black sm:text-4xl">{post.title}</h1>
         <p className="mt-3 text-sm text-neutral-500">
           {new Date(post.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
         </p>
 
         {post.cover_image_url && (
           <div className="relative mt-8 aspect-video w-full overflow-hidden rounded-2xl">
-            <Image src={post.cover_image_url} alt={post.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 672px" priority />
+            <Image src={post.cover_image_url} alt={post.title} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 896px" priority />
           </div>
         )}
 
-        <article className="mt-8">
+        <article className="mt-8 max-w-2xl">
           <BlogBlockRenderer blocks={post.blocks} />
         </article>
       </main>

@@ -31,7 +31,7 @@ export default async function SneakersIndexPage() {
   return (
     <>
       <SiteNav />
-      <main className="mx-auto min-h-screen max-w-5xl px-4 pb-24 pt-32 sm:px-6">
+      <main className="mx-auto min-h-screen max-w-[1500px] px-4 pb-24 pt-32 sm:px-6 xl:px-12">
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-lime-400">Sneaker Database</p>
         <h1 className="mt-3 text-4xl font-black sm:text-5xl">Browse the catalogue</h1>
         <p className="mt-4 max-w-lg text-neutral-400">
@@ -41,7 +41,7 @@ export default async function SneakersIndexPage() {
         {items.length === 0 ? (
           <p className="mt-16 text-neutral-500">Nothing to show yet.</p>
         ) : (
-          <div className="mt-12 grid gap-8 sm:grid-cols-3">
+          <div className="mt-12 grid gap-8 sm:grid-cols-3 xl:grid-cols-5">
             {items.map((item) => (
               <Link key={item.slug} href={`/sneakers/${item.slug}`} className="group block">
                 <div className="relative aspect-square overflow-hidden rounded-2xl border border-neutral-800 bg-white">

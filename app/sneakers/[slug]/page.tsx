@@ -73,7 +73,7 @@ export default async function SneakerDetailPage({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <SiteNav />
-      <main className="mx-auto min-h-screen max-w-4xl px-4 pb-24 pt-32 sm:px-6">
+      <main className="mx-auto min-h-screen max-w-6xl px-4 pb-24 pt-32 sm:px-6">
         <Link href="/sneakers" className="text-sm font-semibold text-neutral-500 hover:text-lime-400">← Sneaker Database</Link>
 
         <div className="mt-8 grid gap-10 sm:grid-cols-2">

@@ -72,7 +72,7 @@ function IconMinus() {
 function Nav() {
   return (
     <header className="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-neutral-950/80 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+      <div className="mx-auto flex max-w-[1500px] items-center justify-between px-4 py-4 sm:px-6 xl:px-12">
         <Image src="/nextsole-logo.png" alt="Nextsole" width={120} height={34} className="h-7 w-auto" priority />
         <nav className="hidden items-center gap-6 md:flex" aria-label="Page sections">
           <a href="#features" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Features</a>
@@ -106,7 +106,7 @@ function Hero() {
         <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-neutral-950/40" />
       </div>
 
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
+      <div className="mx-auto w-full max-w-[1500px] px-4 py-12 sm:px-6 xl:px-12">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-lime-500/30 bg-lime-400/10 px-3 py-1.5 text-xs font-semibold text-lime-400">
@@ -182,7 +182,7 @@ function Features() {
 
   return (
     <section id="features" className="relative py-24 sm:py-32 border-t border-neutral-800 bg-neutral-950">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="mx-auto max-w-[1500px] px-4 sm:px-6 xl:px-12">
         <div className="text-center">
           <p className="text-xs uppercase tracking-[0.3em] text-lime-400 font-semibold">Features</p>
           <h2 className="mt-3 text-3xl font-black sm:text-5xl">Everything your collection needs</h2>
@@ -217,7 +217,7 @@ function HowItWorks() {
 
   return (
     <section id="how-it-works" className="py-24 sm:py-32 border-t border-neutral-800 bg-neutral-950">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="mx-auto max-w-[1500px] px-4 sm:px-6 xl:px-12">
         <div className="text-center">
           <p className="text-xs uppercase tracking-[0.3em] text-lime-400 font-semibold">How it works</p>
           <h2 className="mt-3 text-3xl font-black sm:text-5xl">Up and running in minutes</h2>
@@ -260,7 +260,7 @@ function PricingTable() {
 
   return (
     <section id="pricing" className="py-24 sm:py-32 border-t border-neutral-800 bg-neutral-950">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <div className="text-center">
           <p className="text-xs uppercase tracking-[0.3em] text-lime-400 font-semibold">Pricing</p>
           <h2 className="mt-3 text-3xl font-black sm:text-5xl">Start free, upgrade when ready</h2>
@@ -316,7 +316,7 @@ function PricingTable() {
 function Community() {
   return (
     <section id="community" className="py-24 sm:py-32 border-t border-neutral-800 bg-neutral-950">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className="mx-auto max-w-[1500px] px-4 sm:px-6 xl:px-12">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div>
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-lime-400/10 text-lime-400">
@@ -358,6 +358,10 @@ function FinalCTA() {
     <section className="relative overflow-hidden py-24 sm:py-32 border-t border-neutral-800">
       {/* Let the fixed backdrop show through with a light overlay */}
       <div className="absolute inset-0 -z-10 bg-neutral-950/70" />
+      {/* Deliberately narrow, unlike every other section on this page — a
+          short centered closing statement reads as a focal point this
+          width; widened to 1500px like the rest it'd just be small text
+          lost in a big empty band, which is the opposite of the fix. */}
       <div className="mx-auto max-w-2xl px-4 sm:px-6 text-center">
         <h2 className="text-4xl font-black sm:text-5xl leading-tight">
           Your collection deserves<br />
