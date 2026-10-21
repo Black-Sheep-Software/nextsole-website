@@ -57,9 +57,7 @@ function timeAgo(pubDate: string | null): string {
 function NewsHero({ item }: { item: NewsItem }) {
   return (
     <Link
-      href={item.link}
-      target="_blank"
-      rel="noopener noreferrer"
+      href={`/news/story/${item.slug}`}
       className="group relative block aspect-[16/9] w-full overflow-hidden rounded-2xl bg-neutral-900 sm:aspect-[21/9]"
     >
       {item.image ? (
@@ -86,7 +84,7 @@ function NewsHero({ item }: { item: NewsItem }) {
 // hero above it.
 function NewsCard({ item }: { item: NewsItem }) {
   return (
-    <Link href={item.link} target="_blank" rel="noopener noreferrer" className="group block">
+    <Link href={`/news/story/${item.slug}`} className="group block">
       <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-neutral-900">
         {item.image ? (
           // eslint-disable-next-line @next/next/no-img-element
