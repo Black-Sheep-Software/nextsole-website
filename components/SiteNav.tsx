@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const SIGNIN = "https://app.nextsole.co.uk/login";
+const SHOP = "https://nextsole.teemill.com/";
 
 // A lighter nav for content pages (blog) — the homepage's own Nav has
 // #section anchors that only make sense there, so this stays a separate,
@@ -19,6 +20,7 @@ export default function SiteNav() {
           <Link href="/blog" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Blog</Link>
           <Link href="/#pricing" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Pricing</Link>
           <Link href="/faq" className="text-sm font-semibold text-neutral-400 hover:text-white transition">FAQ</Link>
+          <Link href={SHOP} className="text-sm font-semibold text-neutral-400 hover:text-white transition">Shop</Link>
         </nav>
         <div className="flex items-center gap-3">
           <Link href={SIGNIN} className="text-sm font-semibold text-neutral-400 hover:text-white transition">

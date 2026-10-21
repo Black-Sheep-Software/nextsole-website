@@ -8,6 +8,7 @@ const SIGNIN = `${APP}/login`;
 const PRICING = `${APP}/pricing`;
 const LEADERBOARD = `${APP}/leaderboard`;
 const PLAY_STORE = "https://play.google.com/store/apps/details?id=com.blacksheepsoftware.nextsole";
+const SHOP = "https://nextsole.teemill.com/";
 
 // ── Icons ──────────────────────────────────────────────────────────────────
 
@@ -82,6 +83,7 @@ function Nav() {
           <Link href="/news" className="text-sm font-semibold text-neutral-400 hover:text-white transition">News</Link>
           <Link href="/blog" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Blog</Link>
           <Link href="/faq" className="text-sm font-semibold text-neutral-400 hover:text-white transition">FAQ</Link>
+          <Link href={SHOP} className="text-sm font-semibold text-neutral-400 hover:text-white transition">Shop</Link>
         </nav>
         <div className="flex items-center gap-3">
           <Link href={SIGNIN} className="text-sm font-semibold text-neutral-400 hover:text-white transition">
