@@ -25,8 +25,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function SneakersIndexPage() {
-  const { items } = await listCatalogue({ limit: 60 });
+const PAGE_SIZE = 60;
+
+type Props = {
+  searchParams: Promise<{ q?: string; page?: string }>;
+};
+
+export default async function SneakersIndexPage({ searchParams }: Props) {
+  const { q, page: pageParam } = await searchParams;
+  const page = Math.max(1, Number(pageParam) || 1);
+  const { items, total } = await listCatalogue({ q, limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE });
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+  const pageHref = (p: number) => {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (p > 1) params.set("page", String(p));
+    const qs = params.toString();
+    return `/sneakers${qs ? `?${qs}` : ""}`;
+  };
 
   return (
     <>
@@ -36,6 +53,20 @@ export default async function SneakersIndexPage() {
         <h1 className="mt-3 text-4xl font-black sm:text-5xl">Browse the catalogue</h1>
         <p className="mt-4 max-w-lg text-neutral-400">
           Release dates, retail prices and details — the same catalogue Nextsole members track their own collections against.
+        </p>
+
+        <form action="/sneakers" method="GET" className="mt-8 max-w-md">
+          <input
+            type="search"
+            name="q"
+            defaultValue={q}
+            placeholder="Search by name, brand or colourway…"
+            className="w-full rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm text-white placeholder:text-neutral-500 focus:border-lime-400 focus:outline-none"
+          />
+        </form>
+
+        <p className="mt-6 text-sm text-neutral-500">
+          {total.toLocaleString()} {total === 1 ? "sneaker" : "sneakers"}{q ? ` matching “${q}”` : ""}
         </p>
 
         {items.length === 0 ? (
@@ -65,6 +96,26 @@ export default async function SneakersIndexPage() {
               </Link>
             ))}
           </div>
+        )}
+
+        {totalPages > 1 && (
+          <nav className="mt-16 flex items-center justify-center gap-4" aria-label="Pagination">
+            {page > 1 ? (
+              <Link href={pageHref(page - 1)} className="rounded-xl border border-neutral-700 px-4 py-2 text-sm font-semibold text-neutral-300 hover:border-lime-400 hover:text-lime-400">
+                ← Previous
+              </Link>
+            ) : (
+              <span className="rounded-xl border border-neutral-800 px-4 py-2 text-sm font-semibold text-neutral-600">← Previous</span>
+            )}
+            <span className="text-sm text-neutral-500">Page {page} of {totalPages}</span>
+            {page < totalPages ? (
+              <Link href={pageHref(page + 1)} className="rounded-xl border border-neutral-700 px-4 py-2 text-sm font-semibold text-neutral-300 hover:border-lime-400 hover:text-lime-400">
+                Next →
+              </Link>
+            ) : (
+              <span className="rounded-xl border border-neutral-800 px-4 py-2 text-sm font-semibold text-neutral-600">Next →</span>
+            )}
+          </nav>
         )}
       </main>
       <SiteFooter />

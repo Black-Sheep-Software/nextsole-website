@@ -6,9 +6,10 @@ import type { CatalogueDetail, CatalogueSummary } from "@/lib/catalogueTypes";
 // independent clocks).
 const API_BASE = "https://app.nextsole.co.uk";
 
-export async function listCatalogue(opts: { brand?: string; limit?: number; offset?: number } = {}): Promise<{ items: CatalogueSummary[]; total: number }> {
+export async function listCatalogue(opts: { brand?: string; q?: string; limit?: number; offset?: number } = {}): Promise<{ items: CatalogueSummary[]; total: number }> {
   const params = new URLSearchParams();
   if (opts.brand) params.set("brand", opts.brand);
+  if (opts.q) params.set("q", opts.q);
   if (opts.limit) params.set("limit", String(opts.limit));
   if (opts.offset) params.set("offset", String(opts.offset));
   const qs = params.toString();
