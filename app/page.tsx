@@ -97,6 +97,20 @@ function IconShop() {
   );
 }
 
+// Short, human "2h ago" / "3d ago" form — enough to read as live without
+// the clutter of a full timestamp.
+function timeAgo(iso: string): string | null {
+  const then = new Date(iso).getTime();
+  if (!Number.isFinite(then)) return null;
+  const minutes = Math.floor((Date.now() - then) / 60000);
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
 // ── Page ───────────────────────────────────────────────────────────────────
 
 export default async function Home() {
@@ -109,6 +123,7 @@ export default async function Home() {
   ]);
   const latestNews = news[0] ?? null;
   const nextRelease = comingSoon[0] ?? null;
+  const newsAge = latestNews?.pubDate ? timeAgo(latestNews.pubDate) : null;
 
   return (
     <>
@@ -216,7 +231,15 @@ export default async function Home() {
               <div className="mt-auto flex flex-col gap-2">
                 {latestNews && (
                   <div className="rounded-[10px] border border-white/[0.06] bg-[#14120F] px-3 py-2.5">
-                    <p className="m-0 text-[10.5px] font-bold uppercase tracking-widest text-[#6b665f]">Latest News</p>
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="m-0 text-[10.5px] font-bold uppercase tracking-widest text-[#6b665f]">Latest News</p>
+                      {newsAge && (
+                        <span className="flex items-center gap-1 text-[10px] font-semibold text-lime-400">
+                          <span className="h-1.5 w-1.5 rounded-full bg-lime-400" />
+                          {newsAge}
+                        </span>
+                      )}
+                    </div>
                     <p className="mt-1 line-clamp-2 text-[13px] font-semibold text-[#F2EDE4]">{latestNews.title}</p>
                   </div>
                 )}
