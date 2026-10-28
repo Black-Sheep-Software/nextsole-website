@@ -143,7 +143,7 @@ export default function FaqPage() {
         </div>
 
         <p className="mt-12 text-sm text-neutral-500">
-          Still have a question? <Link href="/#pricing" className="text-lime-400 hover:underline">Check the pricing details</Link>{" "}
+          Still have a question? <Link href="/app#pricing" className="text-lime-400 hover:underline">Check the pricing details</Link>{" "}
           or <a href={`${APP}/feedback`} className="text-lime-400 hover:underline">get in touch</a>.
         </p>
       </main>

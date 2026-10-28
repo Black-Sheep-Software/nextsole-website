@@ -55,6 +55,18 @@ export default async function SneakersIndexPage({ searchParams }: Props) {
           Release dates, retail prices and details — the same catalogue Nextsole members track their own collections against.
         </p>
 
+        <nav aria-label="Sneakers sections" className="mt-8 flex flex-wrap gap-3">
+          <Link href="/news" className="rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm font-semibold text-neutral-300 transition hover:border-lime-400 hover:text-lime-400">
+            Latest News
+          </Link>
+          <Link href="/releases" className="rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm font-semibold text-neutral-300 transition hover:border-lime-400 hover:text-lime-400">
+            Coming Soon
+          </Link>
+          <Link href="/blog" className="rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm font-semibold text-neutral-300 transition hover:border-lime-400 hover:text-lime-400">
+            Blog
+          </Link>
+        </nav>
+
         <form action="/sneakers" method="GET" className="mt-8 max-w-md">
           <input
             type="search"

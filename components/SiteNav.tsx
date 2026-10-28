@@ -4,22 +4,21 @@ import Link from "next/link";
 const SIGNIN = "https://app.nextsole.co.uk/login";
 const SHOP = "https://nextsole.teemill.com/";
 
-// A lighter nav for content pages (blog) — the homepage's own Nav has
-// #section anchors that only make sense there, so this stays a separate,
-// simpler component rather than overloading that one with page-awareness.
+// Single shared nav for every page, including the homepage switchboard.
+// Previously the homepage had its own inline Nav() with #section anchors
+// while every other page used this component — they drifted apart before
+// (Blog vanished from one) and had to be reconciled by hand during a merge.
+// Now there's exactly one nav, matching the switchboard IA: Sneakers | App | Shop.
 export default function SiteNav() {
   return (
     <header className="fixed top-0 inset-x-0 z-50 border-b border-white/10 bg-neutral-950/80 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+      <div className="mx-auto flex max-w-[1500px] items-center justify-between px-4 py-4 sm:px-6 xl:px-12">
         <Link href="/">
           <Image src="/nextsole-logo.png" alt="Nextsole" width={120} height={34} className="h-7 w-auto" priority />
         </Link>
-        <nav className="hidden items-center gap-6 md:flex" aria-label="Page sections">
+        <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
           <Link href="/sneakers" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Sneakers</Link>
-          <Link href="/news" className="text-sm font-semibold text-neutral-400 hover:text-white transition">News</Link>
-          <Link href="/blog" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Blog</Link>
-          <Link href="/#pricing" className="text-sm font-semibold text-neutral-400 hover:text-white transition">Pricing</Link>
-          <Link href="/faq" className="text-sm font-semibold text-neutral-400 hover:text-white transition">FAQ</Link>
+          <Link href="/app" className="text-sm font-semibold text-neutral-400 hover:text-white transition">App</Link>
           <Link href={SHOP} className="text-sm font-semibold text-neutral-400 hover:text-white transition">Shop</Link>
         </nav>
         <div className="flex items-center gap-3">
