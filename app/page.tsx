@@ -3,8 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
-import { listCatalogue } from "@/lib/catalogueApi";
+import { listCatalogue, listUpcomingReleases } from "@/lib/catalogueApi";
 import { getNewsFeed } from "@/lib/newsFeed";
+import { listBlogPosts } from "@/lib/blogApi";
+import { getInstagramFeed, instagramKindLabel } from "@/lib/instagramFeed";
 
 const SHOP = "https://nextsole.teemill.com/";
 const SIGNIN = "https://app.nextsole.co.uk/login";
@@ -13,7 +15,7 @@ const PLAY_STORE = "https://play.google.com/store/apps/details?id=com.blacksheep
 
 // Same reasoning as app/sneakers/page.tsx — the underlying fetches are
 // no-store by design, so this page-level revalidate is the one cache
-// that's actually in effect for the homepage's new live data.
+// that's actually in effect for the homepage's live data.
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
@@ -111,72 +113,72 @@ function timeAgo(iso: string): string | null {
   return `${days}d ago`;
 }
 
+function formatPrice(price: number | null, currency: string | null): string | null {
+  if (price == null) return null;
+  const symbol = currency === "GBP" ? "£" : currency === "USD" ? "$" : "";
+  return `${symbol}${price}`;
+}
+
 // ── Page ───────────────────────────────────────────────────────────────────
 
 export default async function Home() {
-  // Real data, not placeholders — a card that only ever shows invented
-  // copy reads as a mockup, not a product. All three of these already
-  // have a public, unauthenticated fetch path used elsewhere in this repo.
-  const [{ total: catalogueTotal }, { news, comingSoon }] = await Promise.all([
+  // Real data everywhere — a section that only ever shows invented copy
+  // reads as a mockup, not a product. All of these already have a
+  // public, unauthenticated fetch path.
+  const [{ total: catalogueTotal }, { news }, upcomingReleases, blogPosts, igPosts] = await Promise.all([
     listCatalogue({ limit: 1 }),
     getNewsFeed(),
+    listUpcomingReleases(),
+    listBlogPosts(),
+    getInstagramFeed(5),
   ]);
   const latestNews = news[0] ?? null;
-  const nextRelease = comingSoon[0] ?? null;
   const newsAge = latestNews?.pubDate ? timeAgo(latestNews.pubDate) : null;
+  const releases = upcomingReleases.slice(0, 5);
+  const posts = blogPosts.slice(0, 2);
 
   return (
     <>
       <JsonLd />
       {/* `relative` is required, not decorative — without it this div
           doesn't establish its own stacking context, so a negative
-          z-index on the fixed backdrop below (an earlier version of this
-          fix) would escape to the PAGE ROOT's stacking context instead of
-          staying scoped here, where its own solid bg paints in front of
-          root-level negative-z-index content (CSS stacking order:
-          negative z-index < in-flow non-positioned content) — making the
-          backdrop fully invisible, not just dim. Confirmed via a real
-          screenshot + pixel sampling before this fix (flat black, zero
-          variation) vs after (real image data). `position: fixed` on the
-          backdrop itself still anchors to the viewport either way, not
-          to this div — adding `relative` here doesn't change that. See
-          memory: website_hero_backdrop_stacking_bug_2026_11_01. */}
+          z-index on the fixed backdrop below would escape to the PAGE
+          ROOT's stacking context instead of staying scoped here (see
+          memory: website_hero_backdrop_stacking_bug_2026_11_01). */}
       <div className="relative min-h-screen bg-[#14120F] text-[#F2EDE4]">
-        {/* Fixed backdrop — pinned while the page scrolls over it, same
-            effect as the live site's root-level backdrop layer. */}
-        {/* No explicit z-index — being the first child of this now-`relative`
-            wrapper, plain DOM order already paints it behind every later
-            sibling at this stacking level. A negative z-index here was
-            escaping the wrapper's stacking context and rendering behind
-            the page root's own content instead (see memory:
-            website_hero_backdrop_stacking_bug_2026_11_01). */}
+        {/* Full-page FIXED backdrop — pinned while the page scrolls over
+            it, but kept very faint outside the hero. This image does two
+            different jobs (bold hero statement vs. sitewide ambient
+            texture) and one opacity can't serve both — at hero-strength,
+            the fixed, never-moving crop overlaps card content lower on
+            the page. The hero gets its own separate, much stronger copy
+            of the same image, scoped to just that section. */}
+        {/* A wrapping div carries `fixed` — next/image's `fill` prop sets
+            `position: absolute` as an inline style, which would silently
+            override a `fixed` class on the <img> itself (inline always
+            beats a class), breaking the pin-while-scrolling behaviour. */}
         <div className="fixed inset-0">
-          <Image src="/Backdrop.png" alt="" fill className="object-cover object-center opacity-60" priority />
+          <Image src="/Backdrop.png" alt="" fill priority className="object-cover object-center opacity-[0.07]" />
         </div>
 
         <SiteNav />
 
         <main>
           {/* ── Hero ───────────────────────────────────────────────────── */}
-          <section className="relative flex min-h-[620px] items-center overflow-hidden pt-16">
-            {/* Was two near-opaque [#14120F] gradients stacked on an
-                already-dimmed (opacity-60) fixed backdrop — crushed the
-                hero image to near-invisibility. The homepage's backdrop
-                layer is already dimmed globally, unlike /app's hero (which
-                has no separate backdrop layer and needs its own strong
-                gradient) — this just needs enough contrast for the text
-                column on the left, not a blanket cover. */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#14120F] via-[#14120F]/40 to-transparent" />
-            <div className="relative mx-auto grid w-full max-w-[1500px] gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_auto] lg:items-center xl:px-12">
+          <section className="relative flex min-h-[680px] items-center overflow-hidden pt-16">
+            <Image src="/Backdrop.png" alt="" fill className="absolute inset-0 object-cover object-[65%_center] opacity-60" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#14120F] via-[#14120F]/85 to-transparent" style={{ backgroundImage: "linear-gradient(90deg, #14120F 0%, rgba(20,18,15,0.85) 30%, rgba(20,18,15,0.15) 62%, transparent 78%)" }} />
+            <div className="absolute inset-0" style={{ backgroundImage: "linear-gradient(0deg, #14120F 0%, transparent 22%, transparent 85%, #14120F 100%)" }} />
+
+            <div className="relative mx-auto w-full max-w-[1500px] px-4 py-16 sm:px-6 xl:px-12">
               <div className="max-w-xl">
                 <p className="m-0 text-[13px] font-bold uppercase tracking-[0.3em] text-lime-400">Nextsole</p>
                 <h1 className="mt-4 text-5xl font-black leading-[1.03] tracking-tight sm:text-6xl">
                   The home for sneaker<br />
                   <span className="inline-block -skew-x-[10deg] text-lime-400">collectors.</span>
                 </h1>
-                <p className="mt-4 text-base font-bold text-[#cfc9bd]">Track it. Follow it. Wear it — three ways in.</p>
                 <p className="mt-5 max-w-md text-lg leading-relaxed text-[#9a958c]">
-                  Nextsole is where sneaker collectors track their collection&apos;s market value, follow release news, and shop real branded merch.
+                  Nextsole is where sneaker collectors track their collection&apos;s market value, follow release news, and shop real branded merch — three ways in, one home for all of it.
                 </p>
                 <div className="mt-8 flex flex-wrap items-center gap-4">
                   <Link href={SIGNIN} className="rounded-xl bg-lime-400 px-6 py-3.5 text-sm font-bold text-black transition hover:bg-lime-300">
@@ -191,23 +193,15 @@ export default async function Home() {
                     />
                   </a>
                 </div>
-              </div>
 
-              {/* Real app screenshot — the switchboard was previously all
-                  copy, no proof this is a real, shipped product. */}
-              <div className="relative hidden lg:block">
-                {/* A soft glow ties the screenshot to the backdrop behind
-                    it instead of it looking like a stray floating card. */}
-                <div className="absolute -inset-8 rounded-[32px] bg-lime-400/[0.07] blur-2xl" />
-                <div className="relative w-[300px] overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
-                  <Image
-                    src="/app-screenshot.png"
-                    alt="Nextsole — collection overview with market value and rotation engine"
-                    width={560}
-                    height={1040}
-                    className="h-auto w-full"
-                    priority
-                  />
+                {/* Density/proof strip — surfaces the real scale instead of
+                    burying it, the way GOAT leads with its item count. */}
+                <div className="mt-12 flex flex-wrap items-center gap-3">
+                  <span className="text-[13px] font-bold uppercase tracking-[0.12em] text-[#F2EDE4]">{catalogueTotal.toLocaleString()} sneakers tracked</span>
+                  <span className="h-1 w-1 rounded-full bg-lime-400" />
+                  <span className="text-[13px] font-bold uppercase tracking-[0.12em] text-[#8f897c]">Live market pricing</span>
+                  <span className="h-1 w-1 rounded-full bg-lime-400" />
+                  <span className="text-[13px] font-bold uppercase tracking-[0.12em] text-[#8f897c]">Daily rotation picks</span>
                 </div>
               </div>
             </div>
@@ -271,12 +265,6 @@ export default async function Home() {
                     <p className="mt-1 line-clamp-2 text-[13px] font-semibold text-[#F2EDE4]">{latestNews.title}</p>
                   </div>
                 )}
-                {nextRelease && (
-                  <div className="rounded-[10px] border border-white/[0.06] bg-[#14120F] px-3 py-2.5">
-                    <p className="m-0 text-[10.5px] font-bold uppercase tracking-widest text-[#6b665f]">Coming Soon</p>
-                    <p className="mt-1 line-clamp-1 text-[13px] font-semibold text-[#F2EDE4]">{nextRelease.title ?? nextRelease.sku}</p>
-                  </div>
-                )}
                 <span className="inline-flex w-fit items-center rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold text-[#cfc9bd]">
                   {catalogueTotal.toLocaleString()} sneakers tracked
                 </span>
@@ -298,19 +286,147 @@ export default async function Home() {
                   Nextsole sells real tees and hoodies, made for people who live and breathe sneaker culture.
                 </p>
               </div>
-              <div className="mt-auto flex flex-col gap-1.5">
-                <div className="flex items-center justify-between rounded-[10px] border border-white/[0.06] bg-[#14120F] px-3 py-2.5">
-                  <span className="text-[13px] font-semibold text-[#F2EDE4]">The Original Tee</span>
-                  <span className="text-[13px] font-bold text-lime-400">£24</span>
-                </div>
-                <div className="flex items-center justify-between rounded-[10px] border border-white/[0.06] bg-[#14120F] px-3 py-2.5">
-                  <span className="text-[13px] font-semibold text-[#F2EDE4]">Original Hoodie</span>
-                  <span className="text-[13px] font-bold text-lime-400">£45</span>
-                </div>
+              <div className="mt-auto overflow-hidden rounded-[14px] border border-white/[0.08] bg-[#F2EDE4]">
+                <Image src="/shop-tee.jpg" alt="The Original Tee" width={640} height={420} className="h-auto w-full object-contain p-4 transition duration-300 group-hover:scale-[1.03]" />
               </div>
               <span className="text-sm font-bold text-lime-400">Shop now →</span>
             </a>
 
+          </section>
+
+          {/* ── Coming Soon strip — real density/freshness, SneakerNews/GOAT-style ── */}
+          {releases.length > 0 && (
+            <section className="mx-auto max-w-[1312px] px-4 pb-24 sm:px-6 xl:px-12">
+              <div className="mb-6 flex items-baseline justify-between">
+                <h2 className="text-[15px] font-bold uppercase tracking-[0.2em] text-lime-400">Coming Soon</h2>
+                <Link href="/releases" className="text-sm font-semibold text-[#8f897c] hover:text-lime-400">Full release calendar →</Link>
+              </div>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                {releases.map((rel) => {
+                  const price = formatPrice(rel.retail_price, rel.retail_currency);
+                  return (
+                    <Link key={rel.sku} href={`/sneakers/${rel.slug}`} className="group flex flex-col overflow-hidden rounded-[14px] border border-white/[0.08] bg-[#1B1815]">
+                      <div className="relative aspect-square bg-black/40">
+                        {rel.image && (
+                          <Image src={rel.image} alt={rel.title ?? rel.sku} fill className="object-cover transition duration-300 group-hover:scale-105" sizes="(max-width: 640px) 50vw, 20vw" />
+                        )}
+                      </div>
+                      <div className="flex flex-col gap-2 p-3.5">
+                        {rel.release_date && (
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-lime-400">
+                            {new Date(rel.release_date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                          </span>
+                        )}
+                        <span className="line-clamp-2 text-[13px] font-semibold leading-tight">{rel.title ?? rel.sku}</span>
+                        {price && <span className="text-xs font-bold text-[#8f897c]">{price}</span>}
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
+          {/* ── Blog ──────────────────────────────────────────────────── */}
+          {posts.length > 0 && (
+            <section className="border-t border-white/[0.08]">
+              <div className="mx-auto max-w-[1312px] px-4 py-24 sm:px-6 xl:px-12">
+                <div className="mb-7 flex items-baseline justify-between">
+                  <div>
+                    <p className="m-0 text-[13px] font-bold uppercase tracking-[0.3em] text-lime-400">From the Blog</p>
+                    <h2 className="mt-2.5 text-[32px] font-extrabold">Stories, not just stock</h2>
+                  </div>
+                  <Link href="/blog" className="text-sm font-semibold text-[#8f897c] hover:text-lime-400">All posts →</Link>
+                </div>
+                <div className="grid gap-6 sm:grid-cols-2">
+                  {posts.map((post) => (
+                    <Link key={post.slug} href={`/blog/${post.slug}`} className="group flex flex-col overflow-hidden rounded-[18px] border border-white/[0.08] bg-[#1B1815]">
+                      {post.cover_image_url && (
+                        <div className="relative aspect-[16/8] bg-black/40">
+                          <Image src={post.cover_image_url} alt={post.title} fill className="object-cover transition duration-300 group-hover:scale-[1.03]" sizes="(max-width: 640px) 100vw, 50vw" />
+                        </div>
+                      )}
+                      <div className="flex flex-col gap-2.5 p-6">
+                        {post.published_at && (
+                          <span className="text-[10.5px] font-bold uppercase tracking-[0.12em] text-lime-400">
+                            {new Date(post.published_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                          </span>
+                        )}
+                        <h3 className="m-0 text-[19px] font-bold leading-tight">{post.title}</h3>
+                        <span className="mt-1 text-[13px] font-bold text-[#F2EDE4]">Read the story →</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* ── Instagram ─────────────────────────────────────────────── */}
+          {igPosts.length > 0 && (
+            <section className="border-t border-white/[0.08]">
+              <div className="mx-auto max-w-[1312px] px-4 py-24 sm:px-6 xl:px-12">
+                <div className="mb-7 flex items-baseline justify-between">
+                  <div>
+                    <p className="m-0 text-[13px] font-bold uppercase tracking-[0.3em] text-lime-400">@nextsoleuk</p>
+                    <h2 className="mt-2.5 text-[32px] font-extrabold">Follow along</h2>
+                  </div>
+                  <a href="https://www.instagram.com/nextsoleuk" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-[#8f897c] hover:text-lime-400">Follow on Instagram →</a>
+                </div>
+                <div className="grid grid-cols-3 gap-3 sm:grid-cols-5">
+                  {igPosts.map((ig, i) => (
+                    <a
+                      key={i}
+                      href={ig.ig_permalink ?? "https://www.instagram.com/nextsoleuk"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group relative aspect-square overflow-hidden rounded-xl bg-black/40"
+                    >
+                      {ig.image_url && (
+                        <Image src={ig.image_url} alt={ig.caption} fill className="object-cover transition duration-300 group-hover:scale-105" sizes="(max-width: 640px) 33vw, 20vw" />
+                      )}
+                      <div className="absolute inset-0 flex flex-col justify-end p-3" style={{ backgroundImage: "linear-gradient(0deg, rgba(20,18,15,0.9) 0%, transparent 55%)" }}>
+                        <span className="text-[9.5px] font-bold uppercase tracking-[0.08em] text-lime-400">{instagramKindLabel(ig.kind)}</span>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* ── Shop, properly featured ───────────────────────────────── */}
+          <section className="border-t border-white/[0.08]">
+            <div className="mx-auto max-w-[1312px] px-4 py-24 sm:px-6 xl:px-12">
+              <div className="mb-7 flex items-baseline justify-between">
+                <div>
+                  <p className="m-0 text-[13px] font-bold uppercase tracking-[0.3em] text-lime-400">Shop</p>
+                  <h2 className="mt-2.5 text-[32px] font-extrabold">Nextsole merch</h2>
+                  <p className="mt-2.5 max-w-md text-[15px] text-[#9a958c]">Real tees and hoodies, made for people who live and breathe sneaker culture.</p>
+                </div>
+                <a href={SHOP} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-[#8f897c] hover:text-lime-400">Shop all →</a>
+              </div>
+              <div className="grid gap-6 sm:grid-cols-2">
+                <a href={SHOP} target="_blank" rel="noopener noreferrer" className="group flex flex-col overflow-hidden rounded-[18px] border border-white/[0.08] bg-[#1B1815]">
+                  <div className="relative aspect-[4/3] bg-[#F2EDE4]">
+                    <Image src="/shop-tee.jpg" alt="The Original Tee" fill className="object-contain p-6 transition duration-300 group-hover:scale-[1.03]" sizes="(max-width: 640px) 100vw, 50vw" />
+                  </div>
+                  <div className="flex items-center justify-between p-6">
+                    <span className="text-[15px] font-bold">The Original Tee</span>
+                    <span className="text-base font-extrabold text-lime-400">£24</span>
+                  </div>
+                </a>
+                <a href={SHOP} target="_blank" rel="noopener noreferrer" className="group flex flex-col overflow-hidden rounded-[18px] border border-white/[0.08] bg-[#1B1815]">
+                  <div className="relative aspect-[4/3] bg-[#F2EDE4]">
+                    <Image src="/shop-hoodie.jpg" alt="Original Hoodie" fill className="object-contain p-6 transition duration-300 group-hover:scale-[1.03]" sizes="(max-width: 640px) 100vw, 50vw" />
+                  </div>
+                  <div className="flex items-center justify-between p-6">
+                    <span className="text-[15px] font-bold">Original Hoodie</span>
+                    <span className="text-base font-extrabold text-lime-400">£45</span>
+                  </div>
+                </a>
+              </div>
+            </div>
           </section>
 
           {/* ── Community proof ──────────────────────────────────────────
