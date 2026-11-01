@@ -128,10 +128,29 @@ export default async function Home() {
   return (
     <>
       <JsonLd />
-      <div className="min-h-screen bg-[#14120F] text-[#F2EDE4]">
+      {/* `relative` is required, not decorative — without it this div
+          doesn't establish its own stacking context, so a negative
+          z-index on the fixed backdrop below (an earlier version of this
+          fix) would escape to the PAGE ROOT's stacking context instead of
+          staying scoped here, where its own solid bg paints in front of
+          root-level negative-z-index content (CSS stacking order:
+          negative z-index < in-flow non-positioned content) — making the
+          backdrop fully invisible, not just dim. Confirmed via a real
+          screenshot + pixel sampling before this fix (flat black, zero
+          variation) vs after (real image data). `position: fixed` on the
+          backdrop itself still anchors to the viewport either way, not
+          to this div — adding `relative` here doesn't change that. See
+          memory: website_hero_backdrop_stacking_bug_2026_11_01. */}
+      <div className="relative min-h-screen bg-[#14120F] text-[#F2EDE4]">
         {/* Fixed backdrop — pinned while the page scrolls over it, same
             effect as the live site's root-level backdrop layer. */}
-        <div className="fixed inset-0 -z-10">
+        {/* No explicit z-index — being the first child of this now-`relative`
+            wrapper, plain DOM order already paints it behind every later
+            sibling at this stacking level. A negative z-index here was
+            escaping the wrapper's stacking context and rendering behind
+            the page root's own content instead (see memory:
+            website_hero_backdrop_stacking_bug_2026_11_01). */}
+        <div className="fixed inset-0">
           <Image src="/Backdrop.png" alt="" fill className="object-cover object-center opacity-60" priority />
         </div>
 
@@ -140,8 +159,14 @@ export default async function Home() {
         <main>
           {/* ── Hero ───────────────────────────────────────────────────── */}
           <section className="relative flex min-h-[620px] items-center overflow-hidden pt-16">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#14120F] via-[#14120F]/80 to-[#14120F]/20" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#14120F] via-transparent to-[#14120F]/30" />
+            {/* Was two near-opaque [#14120F] gradients stacked on an
+                already-dimmed (opacity-60) fixed backdrop — crushed the
+                hero image to near-invisibility. The homepage's backdrop
+                layer is already dimmed globally, unlike /app's hero (which
+                has no separate backdrop layer and needs its own strong
+                gradient) — this just needs enough contrast for the text
+                column on the left, not a blanket cover. */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#14120F] via-[#14120F]/40 to-transparent" />
             <div className="relative mx-auto grid w-full max-w-[1500px] gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_auto] lg:items-center xl:px-12">
               <div className="max-w-xl">
                 <p className="m-0 text-[13px] font-bold uppercase tracking-[0.3em] text-lime-400">Nextsole</p>
@@ -170,8 +195,11 @@ export default async function Home() {
 
               {/* Real app screenshot — the switchboard was previously all
                   copy, no proof this is a real, shipped product. */}
-              <div className="hidden lg:block">
-                <div className="relative w-[280px] overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
+              <div className="relative hidden lg:block">
+                {/* A soft glow ties the screenshot to the backdrop behind
+                    it instead of it looking like a stray floating card. */}
+                <div className="absolute -inset-8 rounded-[32px] bg-lime-400/[0.07] blur-2xl" />
+                <div className="relative w-[300px] overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
                   <Image
                     src="/app-screenshot.png"
                     alt="Nextsole — collection overview with market value and rotation engine"
@@ -186,11 +214,11 @@ export default async function Home() {
           </section>
 
           {/* ── Switchboard ───────────────────────────────────────────── */}
-          <section className="relative mx-auto grid max-w-[1312px] gap-6 px-4 pb-16 sm:px-6 lg:grid-cols-3 xl:px-12">
+          <section className="relative mx-auto grid max-w-[1312px] gap-8 px-4 pb-20 pt-4 sm:px-6 lg:grid-cols-3 xl:px-12">
 
             <Link
               href="/app"
-              className="group flex flex-col gap-4 rounded-[20px] border border-white/[0.08] bg-[#1B1815] p-7 transition hover:-translate-y-0.5 hover:border-lime-400"
+              className="group flex flex-col gap-5 rounded-[20px] border border-white/[0.08] bg-[#1B1815] p-8 transition hover:-translate-y-0.5 hover:border-lime-400"
             >
               <div className="flex items-center justify-between">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-lime-400/[0.12]"><IconApp /></div>
@@ -216,7 +244,7 @@ export default async function Home() {
 
             <Link
               href="/sneakers"
-              className="group flex flex-col gap-4 rounded-[20px] border border-white/[0.08] bg-[#1B1815] p-7 transition hover:-translate-y-0.5 hover:border-lime-400"
+              className="group flex flex-col gap-5 rounded-[20px] border border-white/[0.08] bg-[#1B1815] p-8 transition hover:-translate-y-0.5 hover:border-lime-400"
             >
               <div className="flex items-center justify-between">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-lime-400/[0.12]"><IconSneakers /></div>
@@ -258,9 +286,7 @@ export default async function Home() {
 
             <a
               href={SHOP}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex flex-col gap-4 rounded-[20px] border border-white/[0.08] bg-[#1B1815] p-7 transition hover:-translate-y-0.5 hover:border-lime-400"
+              className="group flex flex-col gap-5 rounded-[20px] border border-white/[0.08] bg-[#1B1815] p-8 transition hover:-translate-y-0.5 hover:border-lime-400"
             >
               <div className="flex items-center justify-between">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-lime-400/[0.12]"><IconShop /></div>
