@@ -47,6 +47,15 @@ export default async function SneakerDetailPage({ params }: Props) {
   if (!item) notFound();
 
   const url = `https://nextsole.co.uk/sneakers/${item.slug}`;
+  // Deliberately no `offers` block — Nextsole doesn't sell these sneakers
+  // (it's a tracking/reference database, not a retailer), so claiming an
+  // Offer with `availability: InStoreOnly` was false. Google Search
+  // Console correctly flagged that as a Merchant listing / Product
+  // snippet (missing hasMerchantReturnPolicy, shippingDetails, review,
+  // aggregateRating) — the real fix is removing the false "buy this from
+  // us" claim, not fabricating fields we have no honest answer for.
+  // retail_price is still shown on the page itself as reference info,
+  // just not asserted to Google as a live, purchasable offer.
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -56,16 +65,6 @@ export default async function SneakerDetailPage({ params }: Props) {
     image: item.image || undefined,
     description: item.description || undefined,
     releaseDate: item.release_date || undefined,
-    ...(item.retail_price
-      ? {
-          offers: {
-            "@type": "Offer",
-            price: item.retail_price,
-            priceCurrency: item.retail_currency || "GBP",
-            availability: "https://schema.org/InStoreOnly",
-          },
-        }
-      : {}),
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
   };
 
