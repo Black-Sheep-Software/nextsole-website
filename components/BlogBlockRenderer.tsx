@@ -74,7 +74,7 @@ function renderBlock(block: BlogBlock) {
         <div className={`mt-4 flex items-center gap-3 ${align === "text-left" ? "" : "justify-center"}`}>
           {block.avatarUrl && (
             <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full">
-              <Image src={block.avatarUrl} alt={block.name} fill className="object-cover" sizes="40px" />
+              <Image src={block.avatarUrl} alt={block.name} fill unoptimized className="object-cover" sizes="40px" />
             </div>
           )}
           <div>

@@ -118,7 +118,7 @@ export default async function SneakersIndexPage({ searchParams }: Props) {
                 return (
                   <Link key={s.sku} href={`/sneakers/${s.slug}`} className="group flex flex-col overflow-hidden rounded-[18px] border border-white/[0.08] bg-[#1B1815]">
                     <div className="relative aspect-[4/3] bg-black/40">
-                      {s.image && <Image src={s.image} alt={s.title} fill className="object-cover transition duration-300 group-hover:scale-105" sizes="(max-width: 640px) 50vw, 25vw" />}
+                      {s.image && <Image src={s.image} alt={s.title} fill unoptimized className="object-cover transition duration-300 group-hover:scale-105" sizes="(max-width: 640px) 50vw, 25vw" />}
                     </div>
                     <div className="flex flex-col gap-1.5 p-4">
                       <span className="text-[10px] font-bold uppercase tracking-widest text-[#6b665f]">{s.brand}</span>
@@ -173,6 +173,7 @@ export default async function SneakersIndexPage({ searchParams }: Props) {
                           src={item.image}
                           alt={item.title}
                           fill
+                          unoptimized
                           className="object-cover transition duration-300 group-hover:scale-105"
                           sizes="(max-width: 640px) 33vw, 20vw"
                         />

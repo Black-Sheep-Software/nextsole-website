@@ -44,6 +44,7 @@ export default async function BlogIndexPage() {
                       src={post.cover_image_url}
                       alt={post.title}
                       fill
+                      unoptimized
                       className="object-cover transition group-hover:scale-105"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />

@@ -308,7 +308,7 @@ export default async function Home() {
                     <Link key={rel.sku} href={`/sneakers/${rel.slug}`} className="group flex flex-col overflow-hidden rounded-[14px] border border-white/[0.08] bg-[#1B1815]">
                       <div className="relative aspect-square bg-black/40">
                         {rel.image && (
-                          <Image src={rel.image} alt={rel.title ?? rel.sku} fill className="object-cover transition duration-300 group-hover:scale-105" sizes="(max-width: 640px) 50vw, 20vw" />
+                          <Image src={rel.image} alt={rel.title ?? rel.sku} fill unoptimized className="object-cover transition duration-300 group-hover:scale-105" sizes="(max-width: 640px) 50vw, 20vw" />
                         )}
                       </div>
                       <div className="flex flex-col gap-2 p-3.5">
@@ -343,7 +343,7 @@ export default async function Home() {
                     <Link key={post.slug} href={`/blog/${post.slug}`} className="group flex flex-col overflow-hidden rounded-[18px] border border-white/[0.08] bg-[#1B1815]">
                       {post.cover_image_url && (
                         <div className="relative aspect-[16/8] bg-black/40">
-                          <Image src={post.cover_image_url} alt={post.title} fill className="object-cover transition duration-300 group-hover:scale-[1.03]" sizes="(max-width: 640px) 100vw, 50vw" />
+                          <Image src={post.cover_image_url} alt={post.title} fill unoptimized className="object-cover transition duration-300 group-hover:scale-[1.03]" sizes="(max-width: 640px) 100vw, 50vw" />
                         </div>
                       )}
                       <div className="flex flex-col gap-2.5 p-6">
@@ -383,7 +383,7 @@ export default async function Home() {
                       className="group relative aspect-square overflow-hidden rounded-xl bg-black/40"
                     >
                       {ig.image_url && (
-                        <Image src={ig.image_url} alt={ig.caption} fill className="object-cover transition duration-300 group-hover:scale-105" sizes="(max-width: 640px) 33vw, 20vw" />
+                        <Image src={ig.image_url} alt={ig.caption} fill unoptimized className="object-cover transition duration-300 group-hover:scale-105" sizes="(max-width: 640px) 33vw, 20vw" />
                       )}
                       <div className="absolute inset-0 flex flex-col justify-end p-3" style={{ backgroundImage: "linear-gradient(0deg, rgba(20,18,15,0.9) 0%, transparent 55%)" }}>
                         <span className="text-[9.5px] font-bold uppercase tracking-[0.08em] text-lime-400">{instagramKindLabel(ig.kind)}</span>

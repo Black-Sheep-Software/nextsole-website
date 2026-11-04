@@ -92,7 +92,7 @@ export default async function BlogPostPage({ params }: Props) {
 
             {post.cover_image_url && (
               <div className="relative mt-8 aspect-video w-full overflow-hidden rounded-2xl">
-                <Image src={post.cover_image_url} alt={post.title} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 700px" priority />
+                <Image src={post.cover_image_url} alt={post.title} fill unoptimized className="object-cover" sizes="(max-width: 1024px) 100vw, 700px" priority />
               </div>
             )}
 
@@ -135,7 +135,7 @@ export default async function BlogPostPage({ params }: Props) {
                     <Link key={p.slug} href={`/blog/${p.slug}`} className="group block">
                       {p.cover_image_url && (
                         <div className="relative aspect-video overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900">
-                          <Image src={p.cover_image_url} alt={p.title} fill className="object-cover transition group-hover:scale-105" sizes="280px" />
+                          <Image src={p.cover_image_url} alt={p.title} fill unoptimized className="object-cover transition group-hover:scale-105" sizes="280px" />
                         </div>
                       )}
                       <p className="mt-2 text-sm font-semibold text-white transition group-hover:text-lime-400">{p.title}</p>

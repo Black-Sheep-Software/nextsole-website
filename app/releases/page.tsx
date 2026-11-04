@@ -55,6 +55,7 @@ export default async function ReleasesPage() {
                       src={item.image}
                       alt={item.title}
                       fill
+                      unoptimized
                       className="object-contain p-4 transition duration-300 group-hover:scale-105"
                       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
                     />

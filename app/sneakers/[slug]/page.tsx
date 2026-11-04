@@ -77,7 +77,7 @@ export default async function SneakerDetailPage({ params }: Props) {
 
         <div className="mt-8 grid gap-10 sm:grid-cols-2">
           <div className="relative aspect-square overflow-hidden rounded-2xl border border-neutral-800 bg-white">
-            {item.image && <Image src={item.image} alt={item.title} fill className="object-contain p-6" sizes="(max-width: 640px) 100vw, 50vw" priority />}
+            {item.image && <Image src={item.image} alt={item.title} fill unoptimized className="object-contain p-6" sizes="(max-width: 640px) 100vw, 50vw" priority />}
           </div>
 
           <div>
