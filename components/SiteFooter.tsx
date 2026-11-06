@@ -25,7 +25,9 @@ export default function SiteFooter() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
           <div className="flex items-center gap-4">
-            <Image src="/nextsole-logo.png" alt="Nextsole" width={100} height={28} className="h-6 w-auto opacity-60" />
+            <Link href="/" aria-label="Nextsole home">
+              <Image src="/nextsole-logo.png" alt="Nextsole" width={100} height={28} className="h-6 w-auto opacity-60" />
+            </Link>
             <a
               href="https://www.instagram.com/nextsoleuk"
               target="_blank"

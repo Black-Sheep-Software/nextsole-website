@@ -157,7 +157,17 @@ export default async function Home() {
             `position: absolute` as an inline style, which would silently
             override a `fixed` class on the <img> itself (inline always
             beats a class), breaking the pin-while-scrolling behaviour. */}
-        <div className="fixed inset-0">
+        {/* Negative z-index is the actual fix, not just the `relative`
+            parent above — without it this positioned (fixed), z-index:auto
+            element paints ABOVE any ordinary non-positioned sibling
+            regardless of DOM order (CSS stacking rule), silently eating
+            clicks on every section below that doesn't itself happen to be
+            `relative`/`absolute` (confirmed: Instagram "Follow along"
+            links, the Shop section, and SiteFooter's logo/Instagram icon
+            were all click-dead because of this; Hero/Switchboard were only
+            saved by accidentally already being `relative` for other
+            reasons). */}
+        <div className="fixed inset-0 -z-10">
           <Image src="/Backdrop.png" alt="" fill priority className="object-cover object-center opacity-[0.07]" />
         </div>
 
