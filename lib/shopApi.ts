@@ -2,7 +2,8 @@ import type { ShopListing } from "@/lib/shopTypes";
 
 // Same reasoning as lib/catalogueApi.ts — no Supabase access in this repo
 // by design, cache: "no-store" avoids the documented dual-cache bug.
-const API_BASE = "https://app.nextsole.co.uk";
+import { shopApiOrigin } from "@/lib/shopServerConfig";
+const API_BASE = shopApiOrigin();
 
 export async function listShop(
   opts: {
