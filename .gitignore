@@ -5,3 +5,6 @@ out/
 .env*.local
 .vercel
 .env*
+
+# Generated Next.js type declarations
+next-env.d.ts

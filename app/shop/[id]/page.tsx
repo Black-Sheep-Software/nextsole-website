@@ -25,6 +25,7 @@ export default async function ShopListingPage({ params }: Props) {
       <SiteNav />
       <main className="mx-auto max-w-[1100px] px-4 pb-24 pt-32 sm:px-6 xl:px-12">
         <Link href="/shop" className="text-sm text-[#6b665f] hover:text-white">← Shop</Link>
+        <Link href="/shop/cart" className="float-right text-sm text-lime-400">View cart →</Link>
 
         <div className="mt-6 grid gap-10 sm:grid-cols-2">
           <div className="grid grid-cols-3 gap-2">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import SiteNav from "@/components/SiteNav";
@@ -13,31 +13,31 @@ function formatPrice(price: number, currency: string): string {
 }
 
 export default function ShopCartPage() {
-  const { items, removeItem, removeItems, subtotal } = useCart();
+  const { items, removeItem, subtotal } = useCart();
+  const [config, setConfig] = useState<{checkoutEnabled:boolean;shippingPence:number|null;termsUrl?:string|null}|null>(null);
+  useEffect(() => { fetch('/api/shop/config').then(r => r.json()).then(setConfig).catch(() => setConfig({checkoutEnabled:false,shippingPence:null})); }, []);
   const [checkingOut, setCheckingOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function checkout() {
     setError(null);
     setCheckingOut(true);
-    const res = await fetch("/api/shop/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ listingIds: items.map((i) => i.listingId) }),
-    });
-    const json = await res.json().catch(() => ({}));
-    setCheckingOut(false);
-
-    if (res.status === 409 && Array.isArray(json.unavailable)) {
-      removeItems(json.unavailable);
-      setError("Sorry — one or more items just sold out and were removed from your cart. Please check and try again.");
-      return;
-    }
-    if (!res.ok || !json.url) {
-      setError("Something went wrong — please try again.");
-      return;
-    }
-    window.location.href = json.url;
+    try {
+      const signature = items.map(i => i.listingId).sort().join(',');
+      const prior = JSON.parse(sessionStorage.getItem('nextsole_checkout_attempt') ?? 'null');
+      const attemptId = prior?.signature === signature ? prior.id : crypto.randomUUID();
+      sessionStorage.setItem('nextsole_checkout_attempt', JSON.stringify({id:attemptId,signature}));
+      const start = () => fetch('/api/shop/checkout', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({listingIds:items.map(i => i.listingId),attemptId})});
+      let res = await start();
+      let json = await res.json().catch(() => ({}));
+      if (json.prepared) { res = await start(); json = await res.json().catch(() => ({})); }
+      if (!res.ok || !json.url) {
+        if (json.expired || json.unavailable) sessionStorage.removeItem('nextsole_checkout_attempt');
+        setError(json.error ?? 'Checkout is unavailable. Please try again.');return;
+      }
+      window.location.href = json.url;
+    } catch { setError('Could not connect to checkout. Please retry shortly.'); }
+    finally { setCheckingOut(false); }
   }
 
   return (
@@ -73,14 +73,18 @@ export default function ShopCartPage() {
               <span className="text-lg font-bold text-lime-400">{formatPrice(subtotal, items[0]?.currency ?? "GBP")}</span>
             </div>
 
+            <p className="mt-3 text-sm text-[#9a958c]">UK tracked delivery: {config?.shippingPence == null ? 'not configured yet' : `£${(config.shippingPence / 100).toFixed(2)}`} · Prices are confirmed securely at checkout.</p>
+            {config?.shippingPence != null && <p className="mt-2 font-semibold">Total including delivery: £{(subtotal + config.shippingPence / 100).toFixed(2)}</p>}
+            {!config?.checkoutEnabled && <p className="mt-4 text-amber-300">The shop is being prepared. Checkout is not open yet.</p>}
+            {config?.termsUrl && <a href={config.termsUrl} className="mt-3 inline-block text-sm text-lime-400 underline">Delivery, returns and shop terms</a>}
             {error && <p className="mt-4 rounded-xl border border-red-900 bg-red-950/50 px-4 py-2 text-sm text-red-400">{error}</p>}
 
             <button
               onClick={checkout}
-              disabled={checkingOut}
+              disabled={checkingOut || !config?.checkoutEnabled || items.length > 10}
               className="mt-6 w-full rounded-xl bg-lime-400 px-6 py-3.5 text-sm font-bold text-black transition hover:bg-lime-300 disabled:opacity-40"
             >
-              {checkingOut ? "Redirecting to checkout…" : "Checkout"}
+              {checkingOut ? "Redirecting to checkout…" : items.length > 10 ? "Maximum 10 pairs per checkout" : "Checkout"}
             </button>
           </>
         )}

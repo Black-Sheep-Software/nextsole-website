@@ -33,7 +33,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (raw) setItems(JSON.parse(raw));
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) setItems(parsed.filter((i): i is CartItem => i && typeof i.listingId === 'string' && typeof i.title === 'string' && typeof i.price === 'number' && Number.isFinite(i.price) && i.price > 0 && i.currency === 'GBP' && (i.image === null || typeof i.image === 'string') && (i.sizeUk === null || typeof i.sizeUk === 'string')).slice(0,10));
+      }
     } catch {
       // Private window / blocked storage — just start empty.
     }

@@ -4,9 +4,12 @@ import type { ShopListing } from "@/lib/shopTypes";
 // by design, cache: "no-store" avoids the documented dual-cache bug.
 const API_BASE = "https://app.nextsole.co.uk";
 
-export async function listShop(opts: { brand?: string; limit?: number; offset?: number } = {}): Promise<{ items: ShopListing[]; total: number }> {
+export async function listShop(opts: { brand?: string; condition?: string; sizeUk?: string; includeSold?: boolean; limit?: number; offset?: number } = {}): Promise<{ items: ShopListing[]; total: number }> {
   const params = new URLSearchParams();
   if (opts.brand) params.set("brand", opts.brand);
+  if (opts.condition) params.set("condition", opts.condition);
+  if (opts.sizeUk) params.set("sizeUk", opts.sizeUk);
+  if (opts.includeSold === false) params.set("includeSold", "false");
   if (opts.limit) params.set("limit", String(opts.limit));
   if (opts.offset) params.set("offset", String(opts.offset));
   const qs = params.toString();

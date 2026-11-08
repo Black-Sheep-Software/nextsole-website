@@ -16,17 +16,20 @@ function formatPrice(price: number, currency: string): string {
   return `${symbol}${price}`;
 }
 
-type Props = { searchParams: Promise<{ brand?: string; page?: string }> };
+type Props = { searchParams: Promise<{ brand?: string; page?: string; condition?: string; sizeUk?: string; available?: string }> };
 
 export default async function ShopIndexPage({ searchParams }: Props) {
-  const { brand, page: pageParam } = await searchParams;
-  const page = Math.max(1, Number(pageParam) || 1);
-  const { items, total } = await listShop({ brand, limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE });
+  const { brand, page: pageParam, condition, sizeUk, available } = await searchParams;
+  const page = Math.max(1, Math.min(1000, Math.floor(Number(pageParam) || 1)));
+  const { items, total } = await listShop({ brand, condition, sizeUk, includeSold: available !== "true", limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE });
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   const pageHref = (p: number) => {
     const params = new URLSearchParams();
     if (brand) params.set("brand", brand);
+    if (condition) params.set("condition", condition);
+    if (sizeUk) params.set("sizeUk", sizeUk);
+    if (available) params.set("available", available);
     if (p > 1) params.set("page", String(p));
     const qs = params.toString();
     return `/shop${qs ? `?${qs}` : ""}`;
@@ -42,8 +45,19 @@ export default async function ShopIndexPage({ searchParams }: Props) {
           {total.toLocaleString()} {total === 1 ? "pair" : "pairs"} currently listed — everything here is a real, physical pair we own and ship ourselves.
         </p>
 
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+          <form action="/shop" className="flex flex-wrap items-end gap-3">
+            <label className="text-xs text-[#9a958c]">Brand<input name="brand" defaultValue={brand} maxLength={80} placeholder="e.g. Nike" className="mt-1 block w-36 rounded-lg border border-white/15 bg-[#1B1815] p-2 text-sm text-white" /></label>
+            <label className="text-xs text-[#9a958c]">UK size<input name="sizeUk" defaultValue={sizeUk} maxLength={12} placeholder="e.g. 9" className="mt-1 block w-24 rounded-lg border border-white/15 bg-[#1B1815] p-2 text-sm text-white" /></label>
+            <label className="text-xs text-[#9a958c]">Condition<select name="condition" defaultValue={condition ?? ''} className="mt-1 block rounded-lg border border-white/15 bg-[#1B1815] p-2 text-sm text-white"><option value="">Any condition</option><option value="new">New</option><option value="used_like_new">Like new</option><option value="used_good">Good</option><option value="used_fair">Fair</option></select></label>
+            <label className="flex items-center gap-2 py-2 text-sm"><input type="checkbox" name="available" value="true" defaultChecked={available === 'true'} />Hide sold pairs</label>
+            <button className="rounded-lg bg-lime-400 px-4 py-2 text-sm font-bold text-black">Filter</button>
+            <Link href="/shop" className="py-2 text-sm text-[#9a958c]">Reset</Link>
+          </form>
+          <Link href="/shop/cart" className="rounded-xl border border-white/20 px-4 py-2 text-sm text-lime-400">View cart →</Link>
+        </div>
         {items.length === 0 ? (
-          <p className="mt-16 text-[#6b665f]">Nothing listed yet.</p>
+          <p className="mt-16 text-[#6b665f]">No pairs match these filters yet.</p>
         ) : (
           <div className="mt-12 grid gap-5 sm:grid-cols-3 lg:grid-cols-4">
             {items.map((item) => (
