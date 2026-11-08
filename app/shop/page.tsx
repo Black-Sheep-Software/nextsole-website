@@ -1,113 +1,304 @@
-import Image from "next/image";
 import Link from "next/link";
-import SiteNav from "@/components/SiteNav";
+import ShopNav from "@/components/shop/ShopNav";
 import SiteFooter from "@/components/SiteFooter";
+import ProductCard from "@/components/shop/ProductCard";
+import FilterPanel from "@/components/shop/FilterPanel";
+import BuyingGuide from "@/components/shop/BuyingGuide";
 import { listShop } from "@/lib/shopApi";
-
-// Listings sell out faster than catalogue data changes, so this stays much
-// shorter than /sneakers' 1-hour window — see lib/shopApi.ts for why the
-// fetch itself is still cache: "no-store" regardless (dual-cache bug).
 export const revalidate = 60;
-
 const PAGE_SIZE = 24;
-
-function formatPrice(price: number, currency: string): string {
-  const symbol = currency === "GBP" ? "£" : currency === "USD" ? "$" : "";
-  return `${symbol}${price}`;
-}
-
-type Props = { searchParams: Promise<{ brand?: string; page?: string; condition?: string; sizeUk?: string; available?: string }> };
-
-export default async function ShopIndexPage({ searchParams }: Props) {
-  const { brand, page: pageParam, condition, sizeUk, available } = await searchParams;
-  const page = Math.max(1, Math.min(1000, Math.floor(Number(pageParam) || 1)));
-  const { items, total } = await listShop({ brand, condition, sizeUk, includeSold: available !== "true", limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE });
+type Params = {
+  brand?: string;
+  page?: string;
+  condition?: string;
+  sizeUk?: string;
+  available?: string;
+  preowned?: string;
+  q?: string;
+  sort?: string;
+};
+export default async function ShopIndexPage({
+  searchParams,
+}: {
+  searchParams: Promise<Params>;
+}) {
+  const p = await searchParams;
+  const page = Math.max(1, Math.min(1000, Math.floor(Number(p.page) || 1)));
+  const sort = ["newest", "price-low", "price-high"].includes(p.sort ?? "")
+    ? p.sort!
+    : "newest";
+  const { items, total } = await listShop({
+    brand: p.brand,
+    condition: p.condition,
+    sizeUk: p.sizeUk,
+    includeSold: p.available !== "true",
+    preowned: p.preowned === "true",
+    search: p.q,
+    sort,
+    limit: PAGE_SIZE,
+    offset: (page - 1) * PAGE_SIZE,
+  });
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-
-  const pageHref = (p: number) => {
+  const active = [
+    p.q && ["Search", p.q, "q"],
+    p.brand && ["Brand", p.brand, "brand"],
+    p.sizeUk && ["UK size", p.sizeUk, "sizeUk"],
+    p.condition && ["Condition", p.condition.replace(/_/g, " "), "condition"],
+    p.preowned === "true" && ["Category", "Pre-owned", "preowned"],
+    p.available === "true" && ["Availability", "Hide sold", "available"],
+  ].filter(Boolean) as string[][];
+  function href(change: Record<string, string | undefined>) {
     const params = new URLSearchParams();
-    if (brand) params.set("brand", brand);
-    if (condition) params.set("condition", condition);
-    if (sizeUk) params.set("sizeUk", sizeUk);
-    if (available) params.set("available", available);
-    if (p > 1) params.set("page", String(p));
-    const qs = params.toString();
-    return `/shop${qs ? `?${qs}` : ""}`;
-  };
-
+    Object.entries({ ...p, ...change }).forEach(([k, v]) => {
+      if (v) params.set(k, v);
+    });
+    return `/shop${params.size ? "?" + params.toString() : ""}`;
+  }
   return (
-    <div className="min-h-screen bg-[#14120F] text-[#F2EDE4]">
-      <SiteNav />
-      <main className="mx-auto max-w-[1344px] px-4 pb-24 pt-32 sm:px-6 xl:px-12">
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-lime-400">Nextsole Shop</p>
-        <h1 className="mt-3 text-4xl font-black sm:text-5xl">Real pairs, hand-checked.</h1>
-        <p className="mt-4 max-w-lg text-[#9a958c]">
-          {total.toLocaleString()} {total === 1 ? "pair" : "pairs"} currently listed — everything here is a real, physical pair we own and ship ourselves.
-        </p>
-
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-          <form action="/shop" className="flex flex-wrap items-end gap-3">
-            <label className="text-xs text-[#9a958c]">Brand<input name="brand" defaultValue={brand} maxLength={80} placeholder="e.g. Nike" className="mt-1 block w-36 rounded-lg border border-white/15 bg-[#1B1815] p-2 text-sm text-white" /></label>
-            <label className="text-xs text-[#9a958c]">UK size<input name="sizeUk" defaultValue={sizeUk} maxLength={12} placeholder="e.g. 9" className="mt-1 block w-24 rounded-lg border border-white/15 bg-[#1B1815] p-2 text-sm text-white" /></label>
-            <label className="text-xs text-[#9a958c]">Condition<select name="condition" defaultValue={condition ?? ''} className="mt-1 block rounded-lg border border-white/15 bg-[#1B1815] p-2 text-sm text-white"><option value="">Any condition</option><option value="new">New</option><option value="used_like_new">Like new</option><option value="used_good">Good</option><option value="used_fair">Fair</option></select></label>
-            <label className="flex items-center gap-2 py-2 text-sm"><input type="checkbox" name="available" value="true" defaultChecked={available === 'true'} />Hide sold pairs</label>
-            <button className="rounded-lg bg-lime-400 px-4 py-2 text-sm font-bold text-black">Filter</button>
-            <Link href="/shop" className="py-2 text-sm text-[#9a958c]">Reset</Link>
-          </form>
-          <Link href="/shop/cart" className="rounded-xl border border-white/20 px-4 py-2 text-sm text-lime-400">View cart →</Link>
-        </div>
-        {items.length === 0 ? (
-          <p className="mt-16 text-[#6b665f]">No pairs match these filters yet.</p>
-        ) : (
-          <div className="mt-12 grid gap-5 sm:grid-cols-3 lg:grid-cols-4">
-            {items.map((item) => (
-              <Link
-                key={item.id}
-                href={`/shop/${item.id}`}
-                className={`group flex flex-col overflow-hidden rounded-[14px] border border-white/[0.08] bg-[#1B1815] ${item.status === "sold" ? "opacity-50" : ""}`}
+    <div className="min-h-screen bg-[#14120f] text-[#f2ede4]">
+      <ShopNav />
+      <main className="mx-auto max-w-[1440px] px-5 md:px-10">
+        <section className="relative overflow-hidden border-b border-white/10 py-8 md:py-12">
+          <div className="pointer-events-none absolute -right-16 -top-16 h-80 w-80 rounded-full bg-lime-400/[.035] blur-3xl" />
+          <div className="relative flex flex-col justify-between gap-8 md:flex-row md:items-end">
+            <div>
+              <p className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.25em] text-lime-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-lime-400" />
+                The Nextsole selection
+              </p>
+              <h1 className="mt-5 text-[clamp(2.6rem,6.5vw,6rem)] font-black uppercase leading-[.93] tracking-[-.065em]">
+                Good pairs.
+                <br />
+                <span className="text-lime-400">Next chapter.</span>
+              </h1>
+            </div>
+            <div className="hidden max-w-[340px] pb-1 sm:block">
+              <p className="hidden text-sm leading-7 text-[#b9b2a8] sm:block">
+                New finds. Pre-owned favourites. Individual pairs with the
+                photos and details to help you find your next sole.
+              </p>
+              <a
+                href="#pairs"
+                className="mt-5 inline-flex min-h-11 items-center gap-7 text-xs font-semibold uppercase tracking-wider"
               >
-                <div className="relative aspect-square bg-black/40">
-                  {item.images[0] && (
-                    <Image
-                      src={item.images[0]}
-                      alt={item.title}
-                      fill
-                      unoptimized
-                      className="object-cover transition duration-300 group-hover:scale-105"
-                      sizes="(max-width: 640px) 50vw, 25vw"
-                    />
-                  )}
-                  {item.status !== "available" && (
-                    <span className="absolute left-2 top-2 rounded-full bg-black/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-white">
-                      {item.status === "sold" ? "Sold" : "Reserved"}
-                    </span>
-                  )}
-                </div>
-                <div className="flex flex-col gap-1 p-3.5">
-                  <span className="text-[13px] font-semibold leading-tight">{item.title}</span>
-                  <span className="text-xs text-[#6b665f]">UK {item.size_uk ?? "?"} · {item.condition.replace(/_/g, " ")}</span>
-                  <span className="text-xs font-bold text-lime-400">{formatPrice(item.price, item.currency)}</span>
-                </div>
-              </Link>
-            ))}
+                Explore the selection{" "}
+                <span className="text-xl text-lime-400" aria-hidden="true">
+                  ↓
+                </span>
+              </a>
+            </div>
           </div>
-        )}
-
-        {totalPages > 1 && (
-          <nav className="mt-16 flex items-center justify-center gap-4" aria-label="Pagination">
-            {page > 1 ? (
-              <Link href={pageHref(page - 1)} className="rounded-xl border border-white/10 px-4 py-2 text-sm font-semibold text-[#cfc9bd] hover:border-lime-400 hover:text-lime-400">← Previous</Link>
-            ) : (
-              <span className="rounded-xl border border-white/[0.06] px-4 py-2 text-sm font-semibold text-[#6b665f]">← Previous</span>
-            )}
-            <span className="text-sm text-[#6b665f]">Page {page} of {totalPages}</span>
-            {page < totalPages ? (
-              <Link href={pageHref(page + 1)} className="rounded-xl border border-white/10 px-4 py-2 text-sm font-semibold text-[#cfc9bd] hover:border-lime-400 hover:text-lime-400">Next →</Link>
-            ) : (
-              <span className="rounded-xl border border-white/[0.06] px-4 py-2 text-sm font-semibold text-[#6b665f]">Next →</span>
-            )}
-          </nav>
-        )}
+        </section>
+        <div className="grid grid-cols-3 divide-x divide-white/10 border-b border-white/10 py-5 text-center text-[10px] text-[#b9b2a8] sm:text-xs">
+          <span>One pair per listing</span>
+          <span>Actual pair photos</span>
+          <span>UK delivery</span>
+        </div>
+        <section id="pairs" className="scroll-mt-44 pb-14 pt-10 md:pt-14">
+          <div className="mb-7 flex flex-wrap items-end justify-between gap-5">
+            <div className="flex gap-6 text-sm font-semibold">
+              <Link
+                href={href({
+                  condition: undefined,
+                  preowned: undefined,
+                  page: undefined,
+                })}
+                className={`pb-2 ${!p.condition && p.preowned !== "true" ? "border-b-2 border-lime-400 text-white" : "text-[#aaa49a]"}`}
+              >
+                All pairs
+              </Link>
+              <Link
+                href={href({
+                  condition: "new",
+                  preowned: undefined,
+                  page: undefined,
+                })}
+                className={`pb-2 ${p.condition === "new" ? "border-b-2 border-lime-400 text-white" : "text-[#aaa49a]"}`}
+              >
+                New
+              </Link>
+              <Link
+                href={href({
+                  condition: undefined,
+                  preowned: "true",
+                  page: undefined,
+                })}
+                className={`pb-2 ${p.preowned === "true" ? "border-b-2 border-lime-400 text-white" : "text-[#aaa49a]"}`}
+              >
+                Pre-owned
+              </Link>
+            </div>
+            <p className="text-xs text-[#aaa49a]">
+              {total} {total === 1 ? "pair" : "pairs"}
+              {active.length ? " matching your selection" : ""}
+            </p>
+          </div>
+          <FilterPanel activeCount={active.length}>
+            <form
+              action="/shop"
+              className="rounded-2xl border border-white/10 bg-[#1b1815] p-4 md:p-5"
+            >
+              {p.preowned === "true" && (
+                <input type="hidden" name="preowned" value="true" />
+              )}
+              <div className="flex flex-wrap gap-3">
+                <label className="min-w-[180px] flex-1 text-[10px] font-semibold uppercase tracking-wider text-[#aaa49a]">
+                  Find your next pair
+                  <input
+                    type="search"
+                    name="q"
+                    defaultValue={p.q}
+                    placeholder="Search a model or colourway…"
+                    maxLength={80}
+                    className="mt-2 block w-full rounded-lg border border-white/10 bg-[#14120f] px-3 py-3 text-sm font-normal normal-case tracking-normal text-white placeholder:text-[#756f66]"
+                  />
+                </label>
+                <label className="w-[calc(50%_-_6px)] text-[10px] font-semibold uppercase tracking-wider text-[#aaa49a] sm:w-36">
+                  Brand
+                  <input
+                    name="brand"
+                    defaultValue={p.brand}
+                    placeholder="Any brand"
+                    maxLength={80}
+                    className="mt-2 block w-full rounded-lg border border-white/10 bg-[#14120f] px-3 py-3 text-sm font-normal normal-case tracking-normal text-white"
+                  />
+                </label>
+                <label className="w-[calc(50%_-_6px)] text-[10px] font-semibold uppercase tracking-wider text-[#aaa49a] sm:w-24">
+                  UK size
+                  <input
+                    name="sizeUk"
+                    defaultValue={p.sizeUk}
+                    placeholder="Any size"
+                    maxLength={12}
+                    className="mt-2 block w-full rounded-lg border border-white/10 bg-[#14120f] px-3 py-3 text-sm font-normal normal-case tracking-normal text-white"
+                  />
+                </label>
+                <label className="min-w-36 flex-1 text-[10px] font-semibold uppercase tracking-wider text-[#aaa49a] sm:max-w-44">
+                  Condition
+                  <select
+                    name="condition"
+                    defaultValue={p.condition ?? ""}
+                    className="mt-2 block w-full rounded-lg border border-white/10 bg-[#14120f] px-3 py-3 text-sm font-normal normal-case tracking-normal text-white"
+                  >
+                    <option value="">Any condition</option>
+                    <option value="new">New</option>
+                    <option value="used_like_new">Pre-owned: like new</option>
+                    <option value="used_good">Pre-owned: good</option>
+                    <option value="used_fair">Pre-owned: fair</option>
+                  </select>
+                </label>
+                <button className="self-end rounded-lg bg-lime-400 px-6 py-3 text-sm font-bold text-black hover:bg-lime-300">
+                  Find pairs →
+                </button>
+              </div>
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-4">
+                <label className="flex items-center gap-2 text-xs text-[#b9b2a8]">
+                  <input
+                    type="checkbox"
+                    name="available"
+                    value="true"
+                    defaultChecked={p.available === "true"}
+                    className="accent-lime-400"
+                  />
+                  Hide sold pairs
+                </label>
+                <label className="flex items-center gap-2 text-xs text-[#aaa49a]">
+                  Sort by
+                  <select
+                    name="sort"
+                    defaultValue={sort}
+                    className="max-w-44 rounded-lg border border-white/10 bg-[#14120f] px-3 py-2 text-xs text-white"
+                  >
+                    <option value="newest">Latest additions</option>
+                    <option value="price-low">Price: low to high</option>
+                    <option value="price-high">Price: high to low</option>
+                  </select>
+                </label>
+              </div>
+            </form>
+          </FilterPanel>
+          {active.length > 0 && (
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              {active.map(([name, value, key]) => (
+                <Link
+                  key={key}
+                  href={href({ [key]: undefined, page: undefined })}
+                  aria-label={`Remove ${name} filter: ${value}`}
+                  className="rounded-full border border-white/15 px-3 py-2 text-[11px] text-[#cfc9bd]"
+                >
+                  {name}: {value}
+                  <span className="ml-3 text-[#aaa49a]" aria-hidden="true">
+                    ×
+                  </span>
+                </Link>
+              ))}
+              <Link
+                href="/shop"
+                className="px-2 py-2 text-xs text-[#aaa49a] underline underline-offset-4"
+              >
+                Clear all
+              </Link>
+            </div>
+          )}
+          {items.length ? (
+            <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:gap-x-6 lg:grid-cols-4">
+              {items.map((item) => (
+                <ProductCard key={item.id} item={item} />
+              ))}
+            </div>
+          ) : (
+            <div className="my-10 rounded-2xl border border-dashed border-white/15 px-6 py-20 text-center">
+              <p className="text-3xl text-lime-400" aria-hidden="true">
+                ↗
+              </p>
+              <h2 className="mt-4 text-xl font-bold">
+                {active.length
+                  ? "No pairs in this selection."
+                  : "The next rotation starts here."}
+              </h2>
+              <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-[#aaa49a]">
+                {active.length
+                  ? "Try a different size, remove a filter, or explore the whole selection."
+                  : "Our selection is being prepared. New and pre-owned pairs will appear here as they are listed."}
+              </p>
+              {active.length > 0 && (
+                <Link
+                  href="/shop"
+                  className="mt-6 inline-block rounded-full bg-lime-400 px-6 py-3 text-sm font-bold text-black"
+                >
+                  Explore all pairs
+                </Link>
+              )}
+            </div>
+          )}
+          {totalPages > 1 && (
+            <nav
+              aria-label="Pagination"
+              className="mt-12 flex items-center justify-center gap-6 text-xs text-[#aaa49a]"
+            >
+              {page > 1 && (
+                <Link
+                  href={href({ page: String(page - 1) })}
+                  className="rounded-full border border-white/20 px-5 py-3 text-white"
+                >
+                  ← Previous
+                </Link>
+              )}
+              <span>
+                {page} / {totalPages}
+              </span>
+              {page < totalPages && (
+                <Link
+                  href={href({ page: String(page + 1) })}
+                  className="rounded-full border border-white/20 px-5 py-3 text-white"
+                >
+                  Next →
+                </Link>
+              )}
+            </nav>
+          )}
+        </section>
+        <BuyingGuide />
       </main>
       <SiteFooter />
     </div>

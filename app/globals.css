@@ -8,9 +8,30 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Shop controls retain a visible keyboard focus on the dark storefront. */
+.shop-surface :is(a, button, input, select, summary):focus-visible {
+  outline: 2px solid #a3e635;
+  outline-offset: 4px;
+}
+.shop-surface dialog::backdrop {
+  backdrop-filter: blur(4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .shop-surface *,
+  .shop-surface *::before,
+  .shop-surface *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }
