@@ -47,30 +47,23 @@ export default async function SneakerDetailPage({ params }: Props) {
   if (!item) notFound();
 
   const url = `https://nextsole.co.uk/sneakers/${item.slug}`;
-  // Deliberately no `offers` block — Nextsole doesn't sell these sneakers
-  // (it's a tracking/reference database, not a retailer), so claiming an
-  // Offer with `availability: InStoreOnly` was false. Google Search
-  // Console correctly flagged that as a Merchant listing / Product
-  // snippet (missing hasMerchantReturnPolicy, shippingDetails, review,
-  // aggregateRating) — the real fix is removing the false "buy this from
-  // us" claim, not fabricating fields we have no honest answer for.
-  // retail_price is still shown on the page itself as reference info,
-  // just not asserted to Google as a live, purchasable offer.
+  // Catalogue reference pages have no live offers or rated reviews. Use
+  // WebPage markup so Google doesn't treat them as incomplete Product snippets.
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Product",
+    "@type": "WebPage",
+    "@id": url,
+    url,
     name: item.title,
-    brand: item.brand ? { "@type": "Brand", name: item.brand } : undefined,
-    sku: item.sku,
-    image: item.image || undefined,
     description: item.description || undefined,
-    releaseDate: item.release_date || undefined,
-    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    primaryImageOfPage: item.image
+      ? { "@type": "ImageObject", contentUrl: item.image }
+      : undefined,
   };
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <SiteNav />
       <main className="mx-auto min-h-screen max-w-6xl px-4 pb-24 pt-32 sm:px-6">
         <Link href="/sneakers" className="text-sm font-semibold text-neutral-500 hover:text-lime-400">← Sneaker Database</Link>
