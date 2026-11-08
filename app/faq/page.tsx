@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/faq" },
   openGraph: {
     type: "website",
-    url: "https://nextsole.co.uk/faq",
+    url: "https://www.nextsole.co.uk/faq",
     siteName: "Nextsole",
     title: "FAQ — Nextsole",
     description: "Answers to common questions about Nextsole.",

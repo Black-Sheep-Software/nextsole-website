@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
-    url: "https://nextsole.co.uk",
+    url: "https://www.nextsole.co.uk",
     siteName: "Nextsole",
     title: "Nextsole — The Home For Sneaker Collectors",
     description: "Nextsole is where sneaker collectors track their collection's market value, follow release news, and shop real branded merch.",
@@ -42,19 +42,19 @@ function JsonLd() {
     "@graph": [
       {
         "@type": "Organization",
-        "@id": "https://nextsole.co.uk/#org",
+        "@id": "https://www.nextsole.co.uk/#org",
         name: "Nextsole",
-        url: "https://nextsole.co.uk",
-        logo: "https://nextsole.co.uk/nextsole-logo.png",
+        url: "https://www.nextsole.co.uk",
+        logo: "https://www.nextsole.co.uk/nextsole-logo.png",
         brand: { "@type": "Brand", name: "Black Sheep Software" },
         sameAs: ["https://www.instagram.com/nextsoleuk"],
       },
       {
         "@type": "WebSite",
-        "@id": "https://nextsole.co.uk/#website",
-        url: "https://nextsole.co.uk",
+        "@id": "https://www.nextsole.co.uk/#website",
+        url: "https://www.nextsole.co.uk",
         name: "Nextsole",
-        publisher: { "@id": "https://nextsole.co.uk/#org" },
+        publisher: { "@id": "https://www.nextsole.co.uk/#org" },
         potentialAction: {
           "@type": "SearchAction",
           target: "https://app.nextsole.co.uk/collection?q={search_term_string}",

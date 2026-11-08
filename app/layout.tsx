@@ -3,7 +3,7 @@ import Script from "next/script";
 import "./globals.css";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-Y350WLM4QG";
-const SITE_URL = "https://nextsole.co.uk";
+const SITE_URL = "https://www.nextsole.co.uk";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

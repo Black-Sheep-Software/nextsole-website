@@ -2,7 +2,10 @@ import { MetadataRoute } from "next";
 import { listBlogPosts } from "@/lib/blogApi";
 import { listCatalogue } from "@/lib/catalogueApi";
 
-const SITE_URL = "https://nextsole.co.uk";
+const SITE_URL = "https://www.nextsole.co.uk";
+
+// Omit lastModified when the API has no reliable content update timestamp.
+// Generating a sitemap does not mean every catalogue page changed today.
 
 // Pages through the full catalogue rather than a single capped request —
 // there are over a thousand rows, well past the public API's per-request cap.
@@ -25,43 +28,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     {
       url: SITE_URL,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 1,
     },
     {
       url: `${SITE_URL}/app`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
       url: `${SITE_URL}/blog`,
-      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/sneakers`,
-      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/releases`,
-      lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.7,
     },
     {
       url: `${SITE_URL}/news`,
-      lastModified: new Date(),
       changeFrequency: "hourly",
       priority: 0.7,
     },
     {
       url: `${SITE_URL}/faq`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.7,
     },
@@ -73,7 +69,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     ...catalogueSlugs.map((slug) => ({
       url: `${SITE_URL}/sneakers/${slug}`,
-      lastModified: new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.5,
     })),

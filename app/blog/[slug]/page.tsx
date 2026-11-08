@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await getBlogPost(slug);
   if (!post) return {};
 
-  const url = `https://nextsole.co.uk/blog/${post.slug}`;
+  const url = `https://www.nextsole.co.uk/blog/${post.slug}`;
   return {
     title: `${post.title} — Nextsole`,
     description: post.excerpt || undefined,
@@ -50,7 +50,7 @@ export default async function BlogPostPage({ params }: Props) {
     (b) => b.type !== "eyebrow" && b.type !== "heading" && !(b.type === "image" && b.url === post.cover_image_url)
   );
 
-  const url = `https://nextsole.co.uk/blog/${post.slug}`;
+  const url = `https://www.nextsole.co.uk/blog/${post.slug}`;
   const otherPosts = allPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
 
   const jsonLd = {
@@ -62,11 +62,11 @@ export default async function BlogPostPage({ params }: Props) {
     datePublished: post.published_at,
     dateModified: post.published_at,
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
-    author: { "@type": "Organization", name: "Nextsole", url: "https://nextsole.co.uk" },
+    author: { "@type": "Organization", name: "Nextsole", url: "https://www.nextsole.co.uk" },
     publisher: {
       "@type": "Organization",
       name: "Nextsole",
-      logo: { "@type": "ImageObject", url: "https://nextsole.co.uk/icon-192.png" },
+      logo: { "@type": "ImageObject", url: "https://www.nextsole.co.uk/icon-192.png" },
     },
   };
 

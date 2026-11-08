@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const item = await getNewsStory(slug);
   if (!item) return {};
 
-  const url = `https://nextsole.co.uk/news/story/${slug}`;
+  const url = `https://www.nextsole.co.uk/news/story/${slug}`;
   return {
     title: `${item.title} — Nextsole`,
     description: item.excerpt || item.title,

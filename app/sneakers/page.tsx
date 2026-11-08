@@ -12,13 +12,13 @@ import { listCatalogue, listUpcomingReleases } from "@/lib/catalogueApi";
 // Kicks backfill at most), so an hour is plenty fresh.
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
+const hubMetadata: Metadata = {
   title: "The Sneaker Hub — Nextsole",
   description: "Live sneaker news, upcoming releases, and a full searchable archive of thousands of sneakers.",
   alternates: { canonical: "/sneakers" },
   openGraph: {
     type: "website",
-    url: "https://nextsole.co.uk/sneakers",
+    url: "https://www.nextsole.co.uk/sneakers",
     siteName: "Nextsole",
     title: "The Sneaker Hub — Nextsole",
     description: "Live sneaker news, upcoming releases, and a full searchable archive of thousands of sneakers.",
@@ -38,9 +38,36 @@ type Props = {
   searchParams: Promise<{ q?: string; brand?: string; page?: string }>;
 };
 
+function parsePage(value: string | undefined): number {
+  const page = Number(value);
+  return Number.isSafeInteger(page) && page > 0 ? page : 1;
+}
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const { q, brand, page: pageParam } = await searchParams;
+  const page = parsePage(pageParam);
+  const query = new URLSearchParams();
+  if (q) query.set("q", q);
+  if (brand) query.set("brand", brand);
+  if (page > 1) query.set("page", String(page));
+  const canonical = `/sneakers${query.size ? `?${query}` : ""}`;
+
+  // Each archive page exposes different sneakers, so it needs its own
+  // canonical instead of pointing the entire sequence at page one.
+  return {
+    ...hubMetadata,
+    title: page > 1 ? `The Sneaker Hub — Page ${page} — Nextsole` : hubMetadata.title,
+    alternates: { canonical },
+    openGraph: {
+      ...hubMetadata.openGraph,
+      url: `https://www.nextsole.co.uk${canonical}`,
+    },
+  };
+}
+
 export default async function SneakersIndexPage({ searchParams }: Props) {
   const { q, brand, page: pageParam } = await searchParams;
-  const page = Math.max(1, Number(pageParam) || 1);
+  const page = parsePage(pageParam);
   const [{ items, total }, featured] = await Promise.all([
     listCatalogue({ q, brand, limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE }),
     // Featured shelf isn't a "trending" claim we can back yet (real

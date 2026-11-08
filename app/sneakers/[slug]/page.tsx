@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const item = await getCatalogueItem(slug);
   if (!item) return {};
 
-  const url = `https://nextsole.co.uk/sneakers/${item.slug}`;
+  const url = `https://www.nextsole.co.uk/sneakers/${item.slug}`;
   const description = item.description ? item.description.slice(0, 160) : `${item.title} — release date, retail price and details.`;
 
   return {
@@ -46,7 +46,7 @@ export default async function SneakerDetailPage({ params }: Props) {
   const item = await getCatalogueItem(slug);
   if (!item) notFound();
 
-  const url = `https://nextsole.co.uk/sneakers/${item.slug}`;
+  const url = `https://www.nextsole.co.uk/sneakers/${item.slug}`;
   // Catalogue reference pages have no live offers or rated reviews. Use
   // WebPage markup so Google doesn't treat them as incomplete Product snippets.
   const jsonLd = {

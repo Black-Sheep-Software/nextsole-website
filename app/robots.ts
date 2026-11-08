@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
     // suspenders): this stops crawling, that stops indexing even if a URL
     // leaks out before crawlers respect this.
     rules: { userAgent: "*", allow: "/", disallow: "/shop" },
-    sitemap: "https://nextsole.co.uk/sitemap.xml",
+    sitemap: "https://www.nextsole.co.uk/sitemap.xml",
   };
 }

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/releases" },
   openGraph: {
     type: "website",
-    url: "https://nextsole.co.uk/releases",
+    url: "https://www.nextsole.co.uk/releases",
     siteName: "Nextsole",
     title: "Release Calendar — Nextsole",
     description: "Upcoming sneaker release dates.",

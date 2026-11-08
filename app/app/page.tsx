@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/app" },
   openGraph: {
     type: "website",
-    url: "https://nextsole.co.uk/app",
+    url: "https://www.nextsole.co.uk/app",
     siteName: "Nextsole",
     title: "Nextsole App — Sneaker Collection Tracker",
     description: "Track, value and manage your sneaker collection. Know what you own, what it's worth, and what to wear next.",
@@ -392,7 +392,7 @@ function JsonLd() {
       { "@type": "Offer", name: "Free", price: "0", priceCurrency: "GBP", availability: "https://schema.org/InStock" },
       { "@type": "Offer", name: "Pro", price: "4.99", priceCurrency: "GBP", availability: "https://schema.org/InStock" },
     ],
-    publisher: { "@id": "https://nextsole.co.uk/#org" },
+    publisher: { "@id": "https://www.nextsole.co.uk/#org" },
   };
 
   return (
